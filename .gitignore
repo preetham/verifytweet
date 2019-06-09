@@ -105,4 +105,8 @@ venv.bak/
 
 
 #Editors
-vscode
+.vscode
+
+#data folders
+dataset
+.DS_Store

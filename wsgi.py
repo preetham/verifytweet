@@ -6,6 +6,7 @@ import traceback
 import gunicorn.app.base
 from gunicorn.six import iteritems
 
+from app.router import app_router
 from app.config.config import app_config
 
 
@@ -34,4 +35,4 @@ if __name__ == '__main__':
         'timeout': app_config.TIMEOUT,
         'worker_class': app_config.WORKER_CLASS
     }
-    VerifyTweetApp(app, options).run()
+    VerifyTweetApp(app_router, options).run()

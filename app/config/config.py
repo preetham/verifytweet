@@ -12,6 +12,8 @@ class Config(object):
     TESSERACT_PATH = os.getenv('TESSERACT_PATH')
     WORKER_COUNT = no_of_workers()
     WORKER_CLASS = os.getenv('WORKER_CLASS')
+    FILE_DIRECTORY = os.getenv('FILE_DIRECTORY')
+    ALLOWED_EXTENSIONS = set(os.getenv('ALLOWED_EXTENSIONS').split(','))
 
 
 app_config = Config()
