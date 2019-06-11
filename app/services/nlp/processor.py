@@ -1,4 +1,6 @@
 from re import search
+from dateutil.parser import parse
+
 
 from app.logger.logger import logger
 
@@ -15,13 +17,15 @@ def get_entities(text: str):
             'datetime': None
         }
     user_id = username_match.group()
-    date = date_match.group()
+    date_str = date_match.group()
+    date = parse(date_str)
+    formatted_date = date.strftime('%Y-%m-%d')
     username_end_index = username_match.end()
     date_start_index = date_match.start()
     tweet = text[username_end_index+5:date_start_index-10]
     return {
-        'user_id': username,
+        'user_id': user_id,
         'tweet': tweet,
-        'date': date
+        'date': formatted_date
     }
     

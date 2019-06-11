@@ -17,7 +17,10 @@ class Config(object):
     FILE_DIRECTORY = os.getenv('FILE_DIRECTORY')
     ALLOWED_EXTENSIONS = set(os.getenv('ALLOWED_EXTENSIONS').split(','))
     TWITTER_HOSTNAME = os.getenv('TWITTER_HOSTNAME')
-
+    TWITTER_APIVER = os.getenv('TWITTER_APIVER')
+    TWITTER_CONTEXT = os.getenv('TWITTER_CONTEXT')
+    TWITTER_ACCESSTOKEN = os.getenv('TWITTER_ACCESSTOKEN')
+    TWEET_COUNT = os.getenv('TWEET_COUNT')
 
 app_config = Config()
 
