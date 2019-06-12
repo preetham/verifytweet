@@ -25,4 +25,4 @@ RUN source scl_source enable rh-python36 && \
     source venv/bin/activate && \
     pip install --upgrade pip && \
     pip install -r requirements.txt
-ENTRYPOINT [ "entrypoint.sh" ]
+ENTRYPOINT ["/app/entrypoint.sh"]
