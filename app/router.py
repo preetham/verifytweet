@@ -5,7 +5,9 @@ from flask import Flask, jsonify, request
 
 from app.logger.logger import logger
 from app.services.image import uploader, processor
-from app.services.nlp.processor import get_entities
+from app.services.nlp.processor import get_entities, get_similarity
+from app.services.search.controller import search_controller
+from app.util.date_checker import valid
 from app.config.config import app_config
 
 app_router = Flask(__name__, static_folder=app_config.FILE_DIRECTORY)
@@ -30,7 +32,11 @@ def get_text_from_image():
     logger.info('Processed text: ' + text)
     entities = get_entities(text)
     logger.info('Entities: ' + str(entities))
+    if not entities['date'] or not valid(entities['date']):
+        return "Date of Tweet too old", 400
+    same_day_tweets = search_controller(entities)
+    similarity = get_similarity(entities['tweet'], same_day_tweets)
     return jsonify({
         'status': 0,
-        'result': entities
+        'result': similarity
     })

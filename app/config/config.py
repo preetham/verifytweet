@@ -16,11 +16,17 @@ class Config(object):
     WORKER_CLASS = os.getenv('WORKER_CLASS')
     FILE_DIRECTORY = os.getenv('FILE_DIRECTORY')
     ALLOWED_EXTENSIONS = set(os.getenv('ALLOWED_EXTENSIONS').split(','))
+    SIMILARITY_THRESHOLD = float(os.getenv('SIMILARITY_THRESHOLD'))
     TWITTER_HOSTNAME = os.getenv('TWITTER_HOSTNAME')
     TWITTER_APIVER = os.getenv('TWITTER_APIVER')
     TWITTER_CONTEXT = os.getenv('TWITTER_CONTEXT')
     TWITTER_ACCESSTOKEN = os.getenv('TWITTER_ACCESSTOKEN')
-    TWEET_COUNT = os.getenv('TWEET_COUNT')
+    TWEET_COUNT = int(os.getenv('TWEET_COUNT'))
+    TWEET_DATE_KEY = os.getenv('TWEET_DATE_KEY')
+    TWEET_USERNAME_KEY = os.getenv('TWEET_USERNAME_KEY')
+    TWEET_COUNT_KEY = os.getenv('TWEET_COUNT_KEY')
+    TWEET_MAX_OLD = int(os.getenv('TWEET_MAX_OLD'))
+    TWEET_TEXT_KEY = os.getenv('TWEET_TEXT_KEY')
 
 app_config = Config()
 

@@ -5,13 +5,13 @@ from app.logger.logger import logger
 from app.config.config import app_config
 
 
-def search_results(entities):
-    if not entities['date'] or not entities['user_id'] or not entities['tweet']:
-        raise ValueError
+def search_results(querystring):
+    if not querystring:
+        return []
     headers = {'Authorization': 'Bearer ' + app_config.TWITTER_ACCESSTOKEN}
-    querystring = {'screen_name': entities['user_id'] , 'count': app_config.TWEET_COUNT}
     search_url = urljoin(app_config.TWITTER_HOSTNAME + '/' +
                          app_config.TWITTER_APIVER + '/', app_config.TWITTER_CONTEXT)
-    r = requests.get(search_url, headers=headers, querystring=querystring)
+    r = requests.get(search_url, headers=headers, params=querystring)
     response = r.json()
-    return response['statuses']
+    logger.info('Response for Twitter API: ' + str(r.status_code))
+    return response
