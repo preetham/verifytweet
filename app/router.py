@@ -11,6 +11,7 @@ from app.util.date_checker import valid
 from app.config.config import app_config
 
 app_router = Flask(__name__, static_folder=app_config.FILE_DIRECTORY)
+app_router.config['MAX_CONTENT_LENGTH'] = app_config.MAX_CONTENT_LENGTH
 
 
 @app_router.route('/health', methods=['GET'])
