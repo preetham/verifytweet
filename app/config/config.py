@@ -9,7 +9,7 @@ class Config(object):
     APP_HOST = os.getenv('APP_HOST')
     APP_PORT = os.getenv('APP_PORT')
     TIMEOUT = os.getenv('TIMEOUT')
-    MAX_CONTENT_LENGTH = os.getenv('MAX_CONTENT_LENGTH')
+    MAX_CONTENT_LENGTH = int(os.getenv('MAX_CONTENT_LENGTH'))
     TESSERACT_PATH = os.getenv('TESSERACT_PATH')
     IMAGEMAGICK_PATH = os.getenv('IMAGEMAGICK_PATH')
     UPSCALE_PERCENTAGE = os.getenv('UPSCALE_PERCENTAGE')
