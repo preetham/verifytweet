@@ -2,6 +2,7 @@ import os
 import traceback
 
 from flask import Flask, jsonify, request
+from flask_cors import CORS
 
 from app.logger.logger import logger
 from app.services.image import uploader, processor
@@ -11,6 +12,8 @@ from app.util.date_checker import valid
 from app.config.config import app_config
 
 app_router = Flask(__name__, static_folder=app_config.FILE_DIRECTORY)
+app_router.config['MAX_CONTENT_LENGTH'] = app_config.MAX_CONTENT_LENGTH
+CORS(app_router)
 
 
 @app_router.route('/health', methods=['GET'])
