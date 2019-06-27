@@ -28,7 +28,7 @@ from verifytweet.util.result import ResultStatus
 
 
 class APIApproach(object):
-    """Use Twitter API approach to verify tweet
+    """Use Twitter API to verify tweet
     """
 
     def __init__(self, file_path: str):
@@ -39,25 +39,9 @@ class APIApproach(object):
         self.file_path = file_path
 
     def exec(self):
-        try:
-            text_extractor = image_service.Extractor(self.file_path)
-        except Exception as e:
-            logger.exception(e)
+        entities, preprocess_status = preprocess(self.file_path)
+        if preprocess_status != ResultStatus.ALL_OKAY:
             return (None, ResultStatus.MODULE_FAILURE)
-        extracted_text, extractor_status = text_extractor.get_text()
-        if extractor_status != ResultStatus.ALL_OKAY:
-            return (None, extractor_status)
-        logger.info('Processed text: ' + extracted_text)
-
-        try:
-            entity_parser = text_service.DataParser(extracted_text)
-        except Exception as e:
-            logger.exception(e)
-            return (None, ResultStatus.MODULE_FAILURE)
-        entities, parser_status = entity_parser.get_entities()
-        if parser_status != ResultStatus.ALL_OKAY:
-            return (None, parser_status)
-        logger.info('Entities: ' + str(entities))
 
         try:
             search_controller = search_service.TwitterAPISearch(
@@ -89,3 +73,64 @@ class APIApproach(object):
             return (None, validator_status)
         logger.info('Tweet Validity: ' + str(valid_tweet))
         return (valid_tweet, ResultStatus.ALL_OKAY)
+
+
+class NonAPIApproach(object):
+    """Use Twint to verify tweet
+    """
+
+    def __init__(self, file_path: str):
+        if not isinstance(file_path, str):
+            raise TypeError('File path must be type str')
+        if not file_path:
+            raise ValueError('File path must be a valid string')
+        self.file_path = file_path
+
+    def exec(self):
+        entities, preprocess_status = preprocess(self.file_path)
+        if preprocess_status != ResultStatus.ALL_OKAY:
+            return (None, ResultStatus.MODULE_FAILURE)
+
+        try:
+            text_processor = text_service.DataParser(entities['tweet'])
+        except Exception as e:
+            logger.exception(e)
+            return (None, ResultStatus.MODULE_FAILURE)
+        tweet_snippet, text_processor_status = text_processor.clean_text()
+        if text_processor_status != ResultStatus.ALL_OKAY:
+            return (None, text_processor_status)
+
+        try:
+            search_controller = search_service.TwintSearch(
+                entities['user_id'], entities['date'], tweet_snippet)
+        except Exception as e:
+            logger.exception(e)
+            return (None, ResultStatus.MODULE_FAILURE)
+        search_results, search_status = search_controller.search()
+        if search_status != ResultStatus.ALL_OKAY:
+            return (None, search_status)
+
+        return (search_results[0].tweet, ResultStatus.ALL_OKAY)
+
+
+def preprocess(file_path):
+    try:
+        text_extractor = image_service.Extractor(file_path)
+    except Exception as e:
+        logger.exception(e)
+        return (None, ResultStatus.MODULE_FAILURE)
+    extracted_text, extractor_status = text_extractor.get_text()
+    if extractor_status != ResultStatus.ALL_OKAY:
+        return (None, extractor_status)
+    logger.info('Processed text: ' + extracted_text)
+
+    try:
+        entity_parser = text_service.DataParser(extracted_text)
+    except Exception as e:
+        logger.exception(e)
+        return (None, ResultStatus.MODULE_FAILURE)
+    entities, parser_status = entity_parser.get_entities()
+    if parser_status != ResultStatus.ALL_OKAY:
+        return (None, parser_status)
+    logger.info('Entities: ' + str(entities))
+    return (entities, parser_status)

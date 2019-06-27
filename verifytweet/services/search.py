@@ -17,9 +17,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import requests
+import datetime
+import twint
 import urllib.parse as urlparser
 import dateutil.parser as date_parser
-import datetime
 
 import verifytweet.util.date_checker as date_checker
 
@@ -109,14 +110,44 @@ class TwitterAPISearch(object):
         response = r.json()
         logger.info('Status Code for Twitter API: ' + str(r.status_code))
         if r.status_code != 200:
-            raise RuntimeError('Twitter API returned status:' + str(r.status_code))
+            raise RuntimeError('Twitter API returned status:' +
+                               str(r.status_code))
         if not response:
             return (response, ResultStatus.NO_RESULT)
         return (response, ResultStatus.ALL_OKAY)
 
 
 class TwintSearch(object):
+    """Search using Twint
     """
-    """
-    def __init__(self):
-        pass
+
+    def __init__(self, user_id: str, date: datetime.datetime,
+                 tweet_snippet: str):
+        if not isinstance(user_id, str) or not isinstance(
+                date, datetime.datetime) or not (tweet_snippet, str):
+            raise TypeError(
+                'User ID and tweet_snippet must be type string, date must be type datetime.datetime'
+            )
+        if not user_id or not date or not tweet_snippet:
+            raise ValueError('User ID, Tweet or Date cannot be empty')
+        self.user_id = user_id
+        self.date = date
+        self.tweet_snippet = tweet_snippet
+
+    def search(self):
+        twint_config = twint.Config()
+        twint_config.Username = self.user_id
+        twint_config.Search = self.tweet_snippet
+        twint_config.Since = date_checker.format_for_date(self.date)
+        twint_config.Limit = app_config.TWEET_MAX_STORE
+        twint_config.Store_object = True
+        try:
+            twint.run.Search(twint_config)
+        except Exception as e:
+            logger.exception(e)
+            return (None, ResultStatus.MODULE_FAILURE)
+        results = twint.output.tweets_object
+        if not results:
+            return (results, ResultStatus.NO_RESULT)
+        logger.info(f'Search results: {results}')
+        return (results, ResultStatus.ALL_OKAY)

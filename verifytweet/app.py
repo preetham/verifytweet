@@ -72,7 +72,7 @@ def verify_tweet():
     try:
         uploader = image_service.Uploader(request_image)
         file_path = uploader.save_to_disk()
-        rest_controller = controller.APIApproach(file_path)
+        rest_controller = controller.NonAPIApproach(file_path)
     except Exception as e:
         logger.exception(e)
         return jsonify({

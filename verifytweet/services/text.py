@@ -92,17 +92,24 @@ class DataParser(object):
             'date': processed_datetime
         }), ResultStatus.ALL_OKAY)
 
-    @staticmethod
-    def clean_text(text: str):
+    def clean_text(self):
         """Remove stop words and randomly sample words out of tweet
         """
-        non_punc_tweet = text.translate(
-            str.maketrans('', '', string.punctuation))
-        word_tokens = nltk.tokenize.word_tokenize(non_punc_tweet)
+        try:
+            non_punc_tweet = self.text.translate(
+                str.maketrans('', '', string.punctuation))
+            word_tokens = nltk.tokenize.word_tokenize(non_punc_tweet)
+        except Exception as e:
+            logger.exception(e)
+            return (None, ResultStatus.MODULE_FAILURE)
         filtered_sentence = [w for w in word_tokens if not w in stopwords]
         picked_words = random.sample(set(filtered_sentence),
                                      min([len(filtered_sentence), 3]))
-        return " ".join(picked_words)
+        tweet_snippet = " ".join(picked_words)
+        if not tweet_snippet:
+            return (tweet_snippet, ResultStatus.NO_RESULT)
+        logger.info(f'Tweet Snippet: {tweet_snippet}')
+        return (tweet_snippet, ResultStatus.ALL_OKAY)
 
 
 class TextProcessor(object):

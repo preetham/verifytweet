@@ -58,6 +58,7 @@ class Config(object):
     TWEET_COUNT_KEY = os.getenv('TWEET_COUNT_KEY')
     TWEET_MAX_OLD = int(os.getenv('TWEET_MAX_OLD'))
     TWEET_TEXT_KEY = os.getenv('TWEET_TEXT_KEY')
+    TWEET_MAX_STORE = int(os.getenv('TWEET_MAX_STORE'))
 
 
 app_config = Config()
