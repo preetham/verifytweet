@@ -1,0 +1,51 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.org/simple"
+verify_ssl = true
+
+[dev-packages]
+autopep8 = "*"
+yapf = "*"
+sphinx = "*"
+
+[packages]
+certifi = "*"
+chardet = "*"
+click = "*"
+decorator = "*"
+dnspython = "*"
+eventlet = "*"
+greenlet = "*"
+gunicorn = "*"
+idna = "*"
+imageio = "*"
+itsdangerous = "*"
+jinja2 = "*"
+joblib = "*"
+kiwisolver = "*"
+monotonic = "*"
+networkx = "*"
+numpy = "*"
+pycodestyle = "*"
+pyparsing = "*"
+pytesseract = "*"
+python-dateutil = "*"
+pytz = "*"
+pywavelets = "*"
+regex = "*"
+requests = "*"
+scikit-learn = "*"
+scipy = "*"
+six = "*"
+urllib3 = "*"
+Cycler = "*"
+Flask = "*"
+MarkupSafe = "*"
+Pillow = "*"
+Werkzeug = "*"
+flask-cors = "*"
+twint = {editable = true,git = "https://github.com/twintproject/twint.git"}
+nltk = "*"
+
+[requires]
+python_version = "3.7"
