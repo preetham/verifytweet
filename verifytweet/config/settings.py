@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 import os
 import multiprocessing
 
@@ -30,6 +29,7 @@ def no_of_workers():
 
     """
     return multiprocessing.cpu_count() * 2 + 1
+
 
 class Config(object):
     """Configuration for the app
@@ -58,5 +58,6 @@ class Config(object):
     TWEET_COUNT_KEY = os.getenv('TWEET_COUNT_KEY')
     TWEET_MAX_OLD = int(os.getenv('TWEET_MAX_OLD'))
     TWEET_TEXT_KEY = os.getenv('TWEET_TEXT_KEY')
+
 
 app_config = Config()

@@ -16,24 +16,19 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 import os
-import traceback
 
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
+import verifytweet.services.controller as controller
 import verifytweet.services.image as image_service
-import verifytweet.services.text as text_service
-import verifytweet.services.search as search_service
-import verifytweet.shared.date_checker as date_checker
 
-from verifytweet.shared.logging import logger
+from verifytweet.util.logging import logger
 from verifytweet.config.settings import app_config
+from verifytweet.util.result import ResultStatus
 
-
-
-router = Flask(__name__, static_folder = app_config.FILE_DIRECTORY)
+router = Flask(__name__, static_folder=app_config.FILE_DIRECTORY)
 router.config['MAX_CONTENT_LENGTH'] = app_config.MAX_CONTENT_LENGTH
 cors = CORS(router, resources={r'/api/*': {'origins': '*'}})
 
@@ -74,53 +69,18 @@ def verify_tweet():
     request_image = request.files['data']
     if not data_type or not request_image:
         return "Missing form fields", 400
-    uploader = image_service.Uploader(request_image)
-    file_path = uploader.save_to_disk()
-
-    text_extractor = image_service.Extractor(file_path)
-    extracted_text = text_extractor.get_text()
-    logger.info('Processed text: ' + extracted_text)
-
-    entity_parser = text_service.DataParser(extracted_text)
-    entities = entity_parser.get_entities()
-    logger.info('Entities: ' + str(entities))
-    if not entities['date'] or not date_checker.valid_date(entities['date']):
-        return "Date of Tweet too old", 400
-
-    search_controller = search_service.SearchController(
-        entities['user_id'], entities['date'])
-    same_day_tweets = search_controller.aggregate_tweets()
-    if not same_day_tweets:
+    try:
+        uploader = image_service.Uploader(request_image)
+        file_path = uploader.save_to_disk()
+        rest_controller = controller.APIApproach(file_path)
+    except Exception as e:
+        logger.exception(e)
         return jsonify({
-            'status': 1,
-            'result': False
+            'status': ResultStatus.MODULE_FAILURE.value,
+            'result': None
         })
-
-    text_processor = text_service.TextProcessor(entities['tweet'], same_day_tweets)
-    similarity_matrix = text_processor.get_similarity()
-    valid_tweet = verify_validity(similarity_matrix)
-    logger.info('Tweet Validity: ' + str(valid_tweet))
-
+    tweet_validity, controller_status = rest_controller.exec()
     return jsonify({
-        'status': 0,
-        'result': valid_tweet
+        'status': controller_status.value,
+        'result': tweet_validity
     })
-
-
-def verify_validity(similarity_matrix):
-    """Verifies validity of a tweet in similarity matrix.
-
-    Verifies validity of a tweet in similarity matrix, if it crosses
-    the configured threshold for similarity.
-
-    Args:
-        similarity_matrix: A list of lists containing similarity scores
-
-    Returns:
-        A Boolean representing validity of the tweet.
-    """
-    for row in similarity_matrix:
-        for column in row:
-            if column > app_config.SIMILARITY_THRESHOLD:
-                return True
-    return False

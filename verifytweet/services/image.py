@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 import os
 import uuid
 import subprocess
@@ -25,9 +24,11 @@ import pytesseract
 import PIL
 
 from werkzeug.utils import secure_filename
+from werkzeug.datastructures import FileStorage
 
-from verifytweet.shared.logging import logger
+from verifytweet.util.logging import logger
 from verifytweet.config.settings import app_config
+from verifytweet.util.result import ResultStatus
 
 
 class Uploader(object):
@@ -39,7 +40,11 @@ class Uploader(object):
     Attributes:
         file_obj: Image file, type: werkzeug.datastructures.FileStorage.
     """
-    def __init__(self, file_obj):
+
+    def __init__(self, file_obj: FileStorage):
+        if not isinstance(file_obj, FileStorage):
+            raise TypeError(
+                'file obj must be type werkzeug.datastructures.FileStorage')
         self.file = file_obj
 
     def save_to_disk(self):
@@ -48,7 +53,7 @@ class Uploader(object):
             saved_file_name = str(uuid.uuid4()) + '.' + \
                 filename.rsplit('.', 1)[1].lower()
             saved_file_path = os.path.join(app_config.FILE_DIRECTORY,
-                                        saved_file_name)
+                                           saved_file_name)
             logger.info('Saving file to path: ' + saved_file_path)
             self.file.save(saved_file_path)
             return saved_file_path
@@ -68,29 +73,35 @@ class Extractor(object):
     Attributes:
         file_path: A string indicating file path where the image is stored.
     """
-    def __init__(self, file_path):
+
+    def __init__(self, file_path:str):
+        if not isinstance(file_path, str):
+            raise TypeError('File path must be type string')
+        if not file_path:
+            raise ValueError('File path cannot be empty')
         self.file_path = file_path
 
     def get_text(self):
-        if not self.file_path:
-            raise ValueError
         logger.info('Processing Image...')
         new_file_path = self.rescale(self.file_path)
         img = PIL.Image.open(new_file_path).convert('L')
         logger.info('Extracting text from rescaled image..')
-        text = pytesseract.image_to_string(image=img)
-        return text
+        try:
+            text = pytesseract.image_to_string(image=img)
+            if not text:
+                return (None, ResultStatus.NO_RESULT)
+            return (text, ResultStatus.ALL_OKAY)
+        except Exception as e:
+            return (None, ResultStatus.MODULE_FAILURE)
 
     @staticmethod
     def rescale(file_path):
-        if not file_path:
-            raise ValueError
         logger.info('Rescaling Image to 300 dpi')
         new_file_path = file_path.rsplit('.', 1)[0] + '.jpg'
         cmd = [
             app_config.IMAGEMAGICK_PATH, file_path, '-bordercolor', 'White',
-            '-resample', app_config.UPSCALE_RESOLUTION,
-            '-border', '10x10', '-alpha', 'off', new_file_path
+            '-resample', app_config.UPSCALE_RESOLUTION, '-border', '10x10',
+            '-alpha', 'off', new_file_path
         ]
         subprocess.run(cmd)
         return new_file_path

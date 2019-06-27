@@ -45,6 +45,7 @@ Pillow = "*"
 Werkzeug = "*"
 flask-cors = "*"
 twint = {editable = true,git = "https://github.com/twintproject/twint.git"}
+nltk = "*"
 
 [requires]
 python_version = "3.7"
