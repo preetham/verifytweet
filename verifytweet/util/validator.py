@@ -16,16 +16,25 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import numpy
 
-import logging
-import sys
+from verifytweet.config.settings import app_config
+from verifytweet.util.result import ResultStatus
 
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+def verify_validity(similarity_matrix):
+    """Verifies validity of a tweet in similarity matrix.
 
-handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(logging.DEBUG)
+    Verifies validity of a tweet in similarity matrix, if it crosses
+    the configured threshold for similarity.
 
-formatter = logging.Formatter(u'%(asctime)s -- %(levelname)s -- %(message)s')
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+    Args:
+        similarity_matrix: A list of lists containing similarity scores
+
+    Returns:
+        A Boolean representing validity of the tweet.
+    """
+    for row in similarity_matrix:
+        for column in row:
+            if column > app_config.SIMILARITY_THRESHOLD:
+                return (True, ResultStatus.ALL_OKAY)
+    return (False, ResultStatus.ALL_OKAY)

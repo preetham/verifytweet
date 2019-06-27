@@ -16,11 +16,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 from datetime import datetime, timezone
 
 from verifytweet.config.settings import app_config
-from verifytweet.shared.logging import logger
+from verifytweet.util.logging import logger
 
 
 def valid_date(processed_date):
@@ -40,5 +39,6 @@ def valid_date(processed_date):
         return False
     return True
 
-def format_for_date(tweet_datetime:datetime):
+
+def format_for_date(tweet_datetime: datetime):
     return tweet_datetime.strftime('%Y-%m-%d')

@@ -32,7 +32,7 @@ text service
 
 shared module: date checker
 =============================
-.. automodule:: verifytweet.shared.date_checker
+.. automodule:: verifytweet.util.date_checker
    :members:
 
 

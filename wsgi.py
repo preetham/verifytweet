@@ -16,7 +16,6 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
 from __future__ import unicode_literals
 
 import os
@@ -27,7 +26,6 @@ from gunicorn.six import iteritems
 
 from verifytweet.app import router
 from verifytweet.config.settings import app_config
-
 
 
 class VerifyTweetApp(gunicorn.app.base.BaseApplication):
