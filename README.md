@@ -8,10 +8,47 @@ A fake tweet screenshot looks very convincing, misleading the general public. Fo
 |:-------------------------:|:-------------------------:|
 |![alt text](https://i.imgur.com/gG1RYiR.png "Tweet 1") | ![alt text](https://i.imgur.com/eTKpOFY.png "Tweet 2")|
 
-Verify Tweet attempts to resolve the problem by letting users upload such tweet screenshots and verify if the user actually tweeted or not. A combination of Image processing, Natural language processing as well as Twitter Search API makes this possible. Due to Twitter API rate limits, currently only tweets from last 7 days can be verified.
+Verify Tweet attempts to resolve the problem by letting users upload such tweet screenshots and verify if the user actually tweeted or not. A combination of Image processing, Natural language processing as well as Twitter Search API makes this possible.
+
+## Installation
+
+### Prerequisites
+
+- Install [Tesseract-OCR](https://github.com/tesseract-ocr/tesseract/wiki#installation) and add to PATH.
+- Install [ImageMagick](https://imagemagick.org/script/download.php) and add to PATH.
+- Python >= 3.6
+
+Installing via pip:
+
+```sh
+pip install -U git+https://github.com/kamidipreetham/verifytweet.git@origin/master#egg=verifytweet
+```
+
+Or via pipenv:
+
+```sh
+pipenv install -e git+https://github.com/kamidipreetham/verifytweet.git@origin/master#egg=verifytweet
+```
+
+## Usage
+
+Quickstart
+
+```sh
+verifytweet -f <path_to_image_file>
+```
+
+Help
+
+```sh
+verifytweet --help
+```
+
+## License
+
+Verify Tweet is released under GNU Affero General Public License v3.0.
 
 ## Future features
 
 - [ ] Support for Image links
-- [ ] Processing Status
 - [ ] Support for Tweets with replies

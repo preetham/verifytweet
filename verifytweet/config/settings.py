@@ -18,6 +18,7 @@
 
 import os
 import multiprocessing
+import tempfile
 
 
 def no_of_workers():
@@ -35,30 +36,45 @@ class Config(object):
     """Configuration for the app
     """
 
+    IMAGEMAGICK_PATH = os.getenv('IMAGEMAGICK_PATH') if os.getenv(
+        'IMAGEMAGICK_PATH') else "convert"
+    UPSCALE_RESOLUTION = "300x300"
+    FILE_DIRECTORY = tempfile.mkdtemp()
+    TWEET_MAX_STORE = 150
+
+
+class TwitterAPIConfig(Config):
+    """Twitter API Configuration
+    """
+
+    TWITTER_ACCESSTOKEN = os.getenv('TWITTER_ACCESSTOKEN')
+    TWITTER_HOSTNAME = "https://api.twitter.com"
+    TWITTER_APIVER = "1.1"
+    TWITTER_CONTEXT = "statuses/user_timeline.json"
+    TWEET_DATE_KEY = "created_at"
+    TWEET_USERNAME_KEY = "screen_name"
+    TWEET_COUNT = 150
+    TWEET_COUNT_KEY = "count"
+    TWEET_MAX_OLD = 7
+    TWEET_TEXT_KEY = "text"
+    SIMILARITY_THRESHOLD = 0.6
+
+
+class WebConfig(Config):
+    """Configuration for running as web service
+    """
+
     APP_HOST = os.getenv('APP_HOST')
     APP_PORT = os.getenv('APP_PORT')
-    TIMEOUT = os.getenv('TIMEOUT')
-    MAX_CONTENT_LENGTH_KEY = os.getenv('MAX_CONTENT_LENGTH_KEY')
-    MAX_CONTENT_LENGTH = int(os.getenv('MAX_CONTENT_LENGTH'))
-    TESSERACT_PATH = os.getenv('TESSERACT_PATH')
-    IMAGEMAGICK_PATH = os.getenv('IMAGEMAGICK_PATH')
-    UPSCALE_RESOLUTION = os.getenv('UPSCALE_RESOLUTION')
+    TIMEOUT = 2000
+    MAX_CONTENT_LENGTH_KEY = "MAX_CONTENT_LENGTH"
+    MAX_CONTENT_LENGTH = 2097152
     WORKER_COUNT = no_of_workers()
-    WORKER_CLASS = os.getenv('WORKER_CLASS')
-    FILE_DIRECTORY = os.getenv('FILE_DIRECTORY')
-    ALLOWED_EXTENSIONS = set(os.getenv('ALLOWED_EXTENSIONS').split(','))
-    SIMILARITY_THRESHOLD = float(os.getenv('SIMILARITY_THRESHOLD'))
-    TWITTER_HOSTNAME = os.getenv('TWITTER_HOSTNAME')
-    TWITTER_APIVER = os.getenv('TWITTER_APIVER')
-    TWITTER_CONTEXT = os.getenv('TWITTER_CONTEXT')
-    TWITTER_ACCESSTOKEN = os.getenv('TWITTER_ACCESSTOKEN')
-    TWEET_COUNT = int(os.getenv('TWEET_COUNT'))
-    TWEET_DATE_KEY = os.getenv('TWEET_DATE_KEY')
-    TWEET_USERNAME_KEY = os.getenv('TWEET_USERNAME_KEY')
-    TWEET_COUNT_KEY = os.getenv('TWEET_COUNT_KEY')
-    TWEET_MAX_OLD = int(os.getenv('TWEET_MAX_OLD'))
-    TWEET_TEXT_KEY = os.getenv('TWEET_TEXT_KEY')
-    TWEET_MAX_STORE = int(os.getenv('TWEET_MAX_STORE'))
+    WORKER_CLASS = "eventlet"
+    ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
 
 
-app_config = Config()
+run_method = "cli" if "VERIFYTWEET_RUN_FROM_CLI" in os.environ else "web"
+configurations = {"web": WebConfig, "cli": Config}
+
+app_config = configurations[run_method]

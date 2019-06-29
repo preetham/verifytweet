@@ -45,6 +45,8 @@ class Uploader(object):
         if not isinstance(file_obj, FileStorage):
             raise TypeError(
                 'file obj must be type werkzeug.datastructures.FileStorage')
+        if not file_obj:
+            raise ValueError('file obj cannot be empty')
         self.file = file_obj
 
     def save_to_disk(self):
@@ -99,7 +101,7 @@ class Extractor(object):
         logger.info('Rescaling Image to 300 dpi')
         new_file_path = file_path.rsplit('.', 1)[0] + '.jpg'
         cmd = [
-            app_config.IMAGEMAGICK_PATH, file_path, '-bordercolor', 'White',
+            'convert', file_path, '-bordercolor', 'White',
             '-resample', app_config.UPSCALE_RESOLUTION, '-border', '10x10',
             '-alpha', 'off', new_file_path
         ]

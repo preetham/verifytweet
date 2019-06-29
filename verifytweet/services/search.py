@@ -149,5 +149,5 @@ class TwintSearch(object):
         results = twint.output.tweets_object
         if not results:
             return (results, ResultStatus.NO_RESULT)
-        logger.info(f'Search results: {results}')
+        logger.info(f'Search results: {results}\n')
         return (results, ResultStatus.ALL_OKAY)

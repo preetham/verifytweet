@@ -30,8 +30,8 @@ from verifytweet.util.logging import logger
 from verifytweet.config.settings import app_config
 from verifytweet.util.result import ResultStatus
 
-nltk.download('stopwords')
-nltk.download('punkt')
+nltk.download('stopwords', quiet=True)
+nltk.download('punkt', quiet=True)
 count_vectorizer = CountVectorizer()
 stopwords = set(nltk.corpus.stopwords.words('english'))
 
@@ -103,8 +103,7 @@ class DataParser(object):
             logger.exception(e)
             return (None, ResultStatus.MODULE_FAILURE)
         filtered_sentence = [w for w in word_tokens if not w in stopwords]
-        picked_words = random.sample(set(filtered_sentence),
-                                     min([len(filtered_sentence), 3]))
+        picked_words = filtered_sentence[0:min([len(filtered_sentence), 4])]
         tweet_snippet = " ".join(picked_words)
         if not tweet_snippet:
             return (tweet_snippet, ResultStatus.NO_RESULT)

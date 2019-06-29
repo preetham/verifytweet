@@ -24,8 +24,8 @@ import traceback
 import gunicorn.app.base
 from gunicorn.six import iteritems
 
-from verifytweet.app import router
 from verifytweet.config.settings import app_config
+from verifytweet.app import router
 
 
 class VerifyTweetApp(gunicorn.app.base.BaseApplication):
