@@ -110,7 +110,7 @@ class NonAPIApproach(object):
         if search_status != ResultStatus.ALL_OKAY:
             return (None, search_status)
 
-        return (search_results[0].tweet, ResultStatus.ALL_OKAY)
+        return (search_results[0], ResultStatus.ALL_OKAY)
 
 
 def preprocess(file_path):

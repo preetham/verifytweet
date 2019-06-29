@@ -20,10 +20,10 @@ import logging
 import sys
 
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.INFO)
 
 handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(logging.DEBUG)
+handler.setLevel(logging.INFO)
 
 formatter = logging.Formatter(u'%(asctime)s -- %(levelname)s -- %(message)s')
 handler.setFormatter(formatter)
