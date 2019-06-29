@@ -79,8 +79,8 @@ def verify_tweet():
             'status': ResultStatus.MODULE_FAILURE.value,
             'result': None
         })
-    tweet_validity, controller_status = rest_controller.exec()
+    tweet, controller_status = rest_controller.exec()
     return jsonify({
         'status': controller_status.value,
-        'result': tweet_validity
+        'result': tweet
     })
