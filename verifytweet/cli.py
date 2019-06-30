@@ -58,7 +58,7 @@ def run_as_command(filepath):
     elif controller_status == ResultStatus.NO_RESULT:
         print(f"Fake Tweet!")
     else:
-        print(f"Verified Tweet!\n")
+        print(f"\nVerified Tweet!")
         print(
             f"**** Username: {tweet_obj.username} ****\n**** Tweet: {tweet_obj.tweet} ****\n**** Likes: {tweet_obj.likes_count} ****\n**** Retweets: {tweet_obj.retweets_count} ****\n**** Link: {tweet_obj.link} ****"
         )

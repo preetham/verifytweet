@@ -83,7 +83,6 @@ twine==1.13.0
 typing==3.7.4
 typing-extensions==3.7.4
 urllib3==1.25.3
--e git+git@github.com:kamidipreetham/verifytweet.git@251b221ad452a80d54ef165b90b450a4710ac04d#egg=verifytweet
 wcwidth==0.1.7
 webencodings==0.5.1
 Werkzeug==0.15.4

@@ -89,7 +89,7 @@ class TwitterAPISearch(object):
             if date_checker.format_for_date(
                     tweet_date) == date_checker.format_for_date(
                         self.date) and date_checker.valid_date(tweet_date):
-                logger.info('Tweet found...: ' +
+                logger.debug('Tweet found...: ' +
                             str(entry[app_config.TWEET_TEXT_KEY]))
                 same_day_tweets.append(entry[app_config.TWEET_TEXT_KEY])
         if not same_day_tweets:
@@ -108,7 +108,7 @@ class TwitterAPISearch(object):
             '/', app_config.TWITTER_CONTEXT)
         r = requests.get(search_url, headers=headers, params=querystring)
         response = r.json()
-        logger.info('Status Code for Twitter API: ' + str(r.status_code))
+        logger.debug('Status Code for Twitter API: ' + str(r.status_code))
         if r.status_code != 200:
             raise RuntimeError('Twitter API returned status:' +
                                str(r.status_code))
@@ -149,5 +149,5 @@ class TwintSearch(object):
         results = twint.output.tweets_object
         if not results:
             return (results, ResultStatus.NO_RESULT)
-        logger.info(f'Search results: {results}\n')
+        logger.debug(f'Search results: {results}\n')
         return (results, ResultStatus.ALL_OKAY)
