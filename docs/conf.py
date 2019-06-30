@@ -11,8 +11,11 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+import io
+import re
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+
+sys.path.insert(0, os.path.abspath('..'))
 sys.setrecursionlimit(1500)
 
 # -- Project information -----------------------------------------------------
@@ -21,8 +24,11 @@ project = 'verifytweet'
 copyright = '2019, Preetham Kamidi'
 author = 'Preetham Kamidi'
 
+with io.open(os.path.join('../', 'verifytweet/__init__.py'), 'rt', encoding='utf8') as f:
+    version = re.search(r'__version__ = "(.*?)"', f.read()).group(1)
+
 # The full version, including alpha/beta/rc tags
-release = 'v0.3'
+release = version
 
 
 # -- General configuration ---------------------------------------------------

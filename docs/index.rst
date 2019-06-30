@@ -10,9 +10,10 @@ Welcome to verifytweet's documentation!
    :maxdepth: 2
    :caption: Contents:
 
-router
+
+controller
 ===================
-.. automodule:: verifytweet.app
+.. automodule:: verifytweet.services.controller
    :members:
 
 image service
@@ -30,7 +31,7 @@ text service
 .. automodule:: verifytweet.services.text
    :members:
 
-shared module: date checker
+utility module: date checker
 =============================
 .. automodule:: verifytweet.util.date_checker
    :members:

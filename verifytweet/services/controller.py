@@ -122,7 +122,7 @@ def preprocess(file_path):
     extracted_text, extractor_status = text_extractor.get_text()
     if extractor_status != ResultStatus.ALL_OKAY:
         return (None, extractor_status)
-    logger.info('Processed text: ' + extracted_text)
+    logger.debug('Processed text: ' + extracted_text)
 
     try:
         entity_parser = text_service.DataParser(extracted_text)
@@ -132,5 +132,5 @@ def preprocess(file_path):
     entities, parser_status = entity_parser.get_entities()
     if parser_status != ResultStatus.ALL_OKAY:
         return (None, parser_status)
-    logger.info('Entities: ' + str(entities))
+    logger.debug('Entities: ' + str(entities))
     return (entities, parser_status)

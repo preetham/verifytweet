@@ -60,12 +60,9 @@ setup(
     python_requires=">=3.6.*",
     install_requires=[
         "click>=5.1", "Pillow==6.0.0", "pytesseract==0.2.6",
-        "requests==2.22.0", "scikit-learn==0.21.2","Werkzeug>=0.15",
-        "nltk>=3.4.3", "python-dateutil==2.8.0",
+        "requests==2.22.0", "scikit-learn==0.21.2", "nltk>=3.4.3",
+        "python-dateutil==2.8.0",
         "twint @ git+https://github.com/twintproject/twint.git"
-    ],
-    dependency_links=[
-        ""
     ],
     entry_points={
         "console_scripts": ["verifytweet = verifytweet.cli:run_as_command"]
