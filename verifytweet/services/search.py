@@ -90,7 +90,7 @@ class TwitterAPISearch(object):
                     tweet_date) == date_checker.format_for_date(
                         self.date) and date_checker.valid_date(tweet_date):
                 logger.debug('Tweet found...: ' +
-                            str(entry[app_config.TWEET_TEXT_KEY]))
+                             str(entry[app_config.TWEET_TEXT_KEY]))
                 same_day_tweets.append(entry[app_config.TWEET_TEXT_KEY])
         if not same_day_tweets:
             return (same_day_tweets, ResultStatus.NO_RESULT)
