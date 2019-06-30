@@ -19,12 +19,17 @@
 import logging
 import sys
 
+from verifytweet.config.settings import app_config
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
 handler = logging.StreamHandler(sys.stdout)
 handler.setLevel(logging.INFO)
 
-formatter = logging.Formatter(u'%(asctime)s -- %(levelname)s -- %(message)s')
+web_formatter = logging.Formatter(u'%(asctime)s -- %(levelname)s -- %(message)s')
+cli_formatter = logging.Formatter(u'%(message)s')
+formatter = cli_formatter if app_config.RUN_METHOD == "cli" else web_formatter
+
 handler.setFormatter(formatter)
 logger.addHandler(handler)

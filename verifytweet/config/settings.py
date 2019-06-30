@@ -19,6 +19,7 @@
 import os
 import multiprocessing
 import tempfile
+import logging
 
 
 def no_of_workers():
@@ -41,6 +42,8 @@ class Config(object):
     UPSCALE_RESOLUTION = "300x300"
     FILE_DIRECTORY = tempfile.mkdtemp()
     TWEET_MAX_STORE = 150
+    RUN_METHOD = "cli"
+    LOG_LEVEL = logging.INFO
 
 
 class TwitterAPIConfig(Config):
@@ -75,6 +78,7 @@ class WebConfig(Config):
 
 
 run_method = "cli" if "VERIFYTWEET_RUN_FROM_CLI" in os.environ else "web"
+Config.RUN_METHOD = run_method
 configurations = {"web": WebConfig, "cli": Config}
 
 app_config = configurations[run_method]

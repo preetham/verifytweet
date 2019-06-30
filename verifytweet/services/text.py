@@ -107,7 +107,7 @@ class DataParser(object):
         tweet_snippet = " ".join(picked_words)
         if not tweet_snippet:
             return (tweet_snippet, ResultStatus.NO_RESULT)
-        logger.info(f'Tweet Snippet: {tweet_snippet}')
+        logger.debug(f'Tweet Snippet: {tweet_snippet}')
         return (tweet_snippet, ResultStatus.ALL_OKAY)
 
 
@@ -159,5 +159,5 @@ class TextProcessor(object):
         except Exception as e:
             logger.exception(e)
             return (None, ResultStatus.MODULE_FAILURE)
-        logger.info('Similartiy Matrix: ' + str(similarity_matrix))
+        logger.debug('Similartiy Matrix: ' + str(similarity_matrix))
         return (similarity_matrix, ResultStatus.ALL_OKAY)

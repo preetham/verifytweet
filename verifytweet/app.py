@@ -23,6 +23,7 @@ from flask_cors import CORS
 
 import verifytweet.services.controller as controller
 import verifytweet.services.image as image_service
+import verifytweet.util.uploader as image_uploader
 
 from verifytweet.util.logging import logger
 from verifytweet.config.settings import app_config
@@ -70,8 +71,7 @@ def verify_tweet():
     if not data_type or not request_image:
         return "Missing form fields", 400
     try:
-        uploader = image_service.Uploader(request_image)
-        file_path = uploader.save_to_disk()
+        file_path = image_uploader.save_to_disk(request_image)
         rest_controller = controller.NonAPIApproach(file_path)
     except Exception as e:
         logger.exception(e)
