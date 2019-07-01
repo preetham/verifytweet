@@ -3,16 +3,13 @@ jobs:
   build:
     docker:
       - image: ubuntu:18.04
-    environment:
-      PIPENV_VENV_IN_PROJECT: "true"
     steps:
       - checkout
       - run:
           name: Install Dependencies
           command: |
-            pipenv install
             echo 'export TAG=${CIRCLE_TAG}' >> $BASH_ENV
-            echo 'export IMAGE_NAME=verifytweet' >> $BASH_ENV 
+            echo 'export IMAGE_NAME=verifytweet' >> $BASH_ENV
       - setup_remote_docker:
           docker_layer_caching: true
       - run:
@@ -21,10 +18,6 @@ jobs:
             docker build -t kamidipreetham/$IMAGE_NAME:$TAG .
             echo $DOCKER_PWD | docker login -u $DOCKER_USER --password-stdin
             docker push kamidipreetham/$IMAGE_NAME:$TAG
-      - save_cache:
-          key: v1-python-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
-          paths:
-            - '.venv'
 workflows:
   version: 2
   build_and_push:
