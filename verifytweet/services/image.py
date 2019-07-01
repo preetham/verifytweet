@@ -43,6 +43,8 @@ class Extractor(object):
         self.file_path = file_path
 
     def get_text(self):
+        """Extracts text from image
+        """
         logger.info('Processing Image...')
         new_file_path = self.rescale(self.file_path)
         logger.info('Extracting text from rescaled image...')
