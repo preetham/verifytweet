@@ -55,18 +55,17 @@ class DataParser(object):
 
         Parses username (denoted by user_id), tweet as well as date from extracted text.
 
-        Args:
-            self: represents instance of DataParser class
-
         Returns:
-            A dictionary contaning a mapping of user_id, tweet and date.
-            For example:
+            A tuple contaning a dictionary: a mapping of user_id, tweet and date
+            as well as Enum ResultStatus which gives out result status.
+            For example: ::
 
-            {
-                "user_id": "elonmusk",
-                "tweet": "Ms. Tree caught the Falcon fairing!!",
-                "date": datetime.datetime(2019, 6, 8, 7, 29, tzinfo=datetime.timezone.utc)
-            }
+                {
+                    "user_id": "elonmusk",
+                    "tweet": "Ms. Tree caught the Falcon fairing!!",
+                    "date": datetime.datetime(2019, 6, 8, 7, 29, tzinfo=datetime.timezone.utc)
+                }
+
         """
         logger.info('Parsing data out of extracted text...')
         username_match = re.search(r'@(\w{1,15})\b', self.text)
@@ -93,7 +92,12 @@ class DataParser(object):
         }), ResultStatus.ALL_OKAY)
 
     def clean_text(self):
-        """Remove stop words and randomly sample words out of tweet
+        """Removes stop words and samples words out of tweet
+        to create a snippet.
+
+        Returns:
+            A tuple contaning a tweet snippet
+            as well as Enum ResultStatus which gives out result status.
         """
         try:
             non_punc_tweet = self.text.translate(
@@ -139,14 +143,15 @@ class TextProcessor(object):
         extracted tweet and tweets aggregated from Twitter Search API
         using consine similarity approach.
 
-        Args:
-            self: represents instance of TextProcessor class
-
         Returns:
-            A similarity matrix.
-            For example:
-            [[1.        0.9258201]
-             [0.9258201 1.       ]]
+            A tuple contaning a similarity matrix, which is a numpy array
+            as well as Enum ResultStatus which gives out result status.
+            For example: ::
+
+                ([[1.        0.9258201]
+                 [0.9258201 1.       ]], ResultStatus.ALL_OKAY)
+
+
         """
         logger.info('Processing similarity of two tweets...')
         corpus = list()

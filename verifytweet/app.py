@@ -54,15 +54,16 @@ def verify_tweet():
 
     Returns:
         A dict mapping status and validity of the tweet. For
-        example:
+        example: ::
 
-        {
-          "status": 0,
-          "result": True
-        }
-
+            {
+                "status": 0,
+                "result": True
+            }
+    
         If the form fields are missing or the tweet is too old,
         a 400 (Bad Request) is returned.
+
     """
     logger.info('Received data for processing...')
 

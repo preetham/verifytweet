@@ -1,5 +1,5 @@
 .. verifytweet documentation master file, created by
-   sphinx-quickstart on Wed Jun 26 17:19:56 2019.
+   sphinx-quickstart on Mon Jul  1 23:25:44 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -7,36 +7,10 @@ Welcome to verifytweet's documentation!
 =======================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 4
    :caption: Contents:
 
-
-controller
-===================
-.. automodule:: verifytweet.services.controller
-   :members:
-
-image service
-=====================
-.. automodule:: verifytweet.services.image
-   :members:
-
-search service
-==================
-.. automodule:: verifytweet.services.search
-   :members:
-
-text service
-====================
-.. automodule:: verifytweet.services.text
-   :members:
-
-utility module: date checker
-=============================
-.. automodule:: verifytweet.util.date_checker
-   :members:
-
-
+   verifytweet
 
 
 Indices and tables
