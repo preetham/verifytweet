@@ -19,7 +19,8 @@
 from enum import Enum
 
 class ResultStatus(Enum):
-    """Represents the result status of each module
+    """Represents the result status of each module,
+    inherits Enum class.
     """
     ALL_OKAY=0
     NO_RESULT=1

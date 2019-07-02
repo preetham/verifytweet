@@ -1,3 +1,2 @@
 #!/bin/bash
-source venv/bin/activate
-python wsgi.py
+python3 -m pipenv run python wsgi.py

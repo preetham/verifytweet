@@ -29,6 +29,9 @@ from verifytweet.util.result import ResultStatus
 
 class APIApproach(object):
     """Use Twitter API to verify tweet
+
+    Attributes:
+        file_path: A string denoting a twitter username.
     """
 
     def __init__(self, file_path: str):
@@ -39,6 +42,19 @@ class APIApproach(object):
         self.file_path = file_path
 
     def exec(self):
+        """Executes controller flow
+
+        Controller uses image service to extract text from
+        image, passes text to text service to parse entities such
+        as username, tweet as well as date, uses search service 
+        to retrieve same day tweets, text service to find similar tweet
+        and finally verifying the tweet.
+
+        Returns:
+            valid_tweet: A tweet object
+            status: Enum ResultStatus representing result status
+
+        """
         entities, preprocess_status = preprocess(self.file_path)
         if preprocess_status != ResultStatus.ALL_OKAY:
             return (None, ResultStatus.MODULE_FAILURE)
@@ -76,7 +92,10 @@ class APIApproach(object):
 
 
 class NonAPIApproach(object):
-    """Use Twint to verify tweet
+    """Use a non-api approach to verify tweet
+
+    Attributes:
+        file_path: A string denoting a twitter username.
     """
 
     def __init__(self, file_path: str):
@@ -87,6 +106,18 @@ class NonAPIApproach(object):
         self.file_path = file_path
 
     def exec(self):
+        """Executes controller flow
+
+        Controller uses image service to extract text from
+        image, passes text to text service to parse entities such
+        as username, tweet as well as date, uses search service 
+        to retrieve a tweet if available.
+
+        Returns:
+            search_results: list of tweet objects
+            status: Enum ResultStatus representing result status
+
+        """
         entities, preprocess_status = preprocess(self.file_path)
         if preprocess_status != ResultStatus.ALL_OKAY:
             return (None, ResultStatus.MODULE_FAILURE)
@@ -101,12 +132,12 @@ class NonAPIApproach(object):
             return (None, text_processor_status)
 
         try:
-            search_controller = search_service.TwintSearch(
+            search_controller = search_service.TwintSearch()
+            search_results, search_status = search_controller.search(
                 entities['user_id'], entities['date'], tweet_snippet)
         except Exception as e:
             logger.exception(e)
             return (None, ResultStatus.MODULE_FAILURE)
-        search_results, search_status = search_controller.search()
         if search_status != ResultStatus.ALL_OKAY:
             return (None, search_status)
 
@@ -114,6 +145,19 @@ class NonAPIApproach(object):
 
 
 def preprocess(file_path):
+    """Preprocesses text
+
+    Extracts text from image using image service,
+    parses entities from text using text service.
+
+    Args:
+        file_path: represents path of the image file.
+
+    Returns:
+        entities: Entities parsed from text such as tweet, user_id and date.
+        status: Enum ResultStatus representing result status
+
+    """
     try:
         text_extractor = image_service.Extractor(file_path)
     except Exception as e:

@@ -57,19 +57,18 @@ class TwitterAPISearch(object):
         Retrieves tweets pertaining to the given username and date using Twitter Search API.
         Aggregates tweets to a list.
 
-        Args:
-            self: represents instance of the SearchController class
-
         Returns:
             A list contaning a dict representing a Tweet Object. 
+            
             Ref: https://developer.twitter.com/en/docs/tweets/data-dictionary/overview/tweet-object.
-            For example:
+            
+            For example: ::
 
-            {"created_at": "Wed Oct 10 20:19:24 +0000 2018",
-             "text": "To make room for more expression, 
-                we will now count all emojis as equal—including
-                those with gender‍‍‍ ‍‍and skin t… https://t.co/MkGjXf9aXm"
-            }
+                {
+                    "created_at": "Wed Oct 10 20:19:24 +0000 2018",
+                    "text": "To make room for more expression, we will now count all emojis as equal—including those with gender‍‍‍ ‍‍and skin t… https://t.co/MkGjXf9aXm"
+                }
+
         """
         logger.info('Searching for tweet using Twitter API...')
         querystring = dict({
@@ -118,11 +117,35 @@ class TwitterAPISearch(object):
 
 
 class TwintSearch(object):
-    """Search using Twint
+    """Search for tweets using Twint
+
+    Retrieves tweets of a user using twint basing on
+    username, date as well as tweet snippet.
+
+    Attributes:
+        user_id: A string denoting a twitter username.
+        date: A datetime object representing the date in question.
+        tweet_snippet: A snippet of tweet extracted from image.
     """
 
-    def __init__(self, user_id: str, date: datetime.datetime,
-                 tweet_snippet: str):
+    def __init__(self):
+        pass
+
+    def search(self, user_id: str, date: datetime.datetime,
+               tweet_snippet: str):
+        """Searches for tweets
+
+        Retrieves tweets of given username, date as well as tweet snippet using Twint.
+        Aggregates tweets to a list.
+
+        Returns:
+            A tuple contaning a list of results, each result represents a tweet object
+            as well as ResultStatus.
+            For example: ::
+
+                ([<tweet_obj>], ResultStatus.ALL_OKAY)
+
+        """
         if not isinstance(user_id, str) or not isinstance(
                 date, datetime.datetime) or not (tweet_snippet, str):
             raise TypeError(
@@ -130,15 +153,10 @@ class TwintSearch(object):
             )
         if not user_id or not date or not tweet_snippet:
             raise ValueError('User ID, Tweet or Date cannot be empty')
-        self.user_id = user_id
-        self.date = date
-        self.tweet_snippet = tweet_snippet
-
-    def search(self):
         twint_config = twint.Config()
-        twint_config.Username = self.user_id
-        twint_config.Search = self.tweet_snippet
-        twint_config.Since = date_checker.format_for_date(self.date)
+        twint_config.Username = user_id
+        twint_config.Search = tweet_snippet
+        twint_config.Since = date_checker.format_for_date(date)
         twint_config.Limit = app_config.TWEET_MAX_STORE
         twint_config.Store_object = True
         try:

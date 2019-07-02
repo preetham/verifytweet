@@ -46,6 +46,10 @@ def run_as_command(filepath):
 
     Args:
         filepath: The filepath for the tweet screenshot image.
+    
+    Returns:
+        Prints validity of a tweet
+
     """
 
     try:
