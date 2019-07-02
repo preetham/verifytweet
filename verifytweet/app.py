@@ -24,6 +24,7 @@ from flask_cors import CORS
 import verifytweet.services.controller as controller
 import verifytweet.services.image as image_service
 import verifytweet.util.uploader as image_uploader
+import verifytweet.util.object_mapper as object_mapper
 
 from verifytweet.util.logging import logger
 from verifytweet.config.settings import app_config
@@ -85,8 +86,14 @@ def verify_tweet():
         return jsonify({
             'status': controller_status.value,
             'result': result
-        })    
+        })
+    tweet_dict, mapper_status = object_mapper.map_keys(result)
+    if mapper_status != ResultStatus.ALL_OKAY:
+        return jsonify({
+            'status': mapper_status.value,
+            'result': tweet_dict
+        })
     return jsonify({
-        'status': controller_status.value,
-        'result': result.tweet
+        'status': mapper_status.value,
+        'result': tweet_dict
     })

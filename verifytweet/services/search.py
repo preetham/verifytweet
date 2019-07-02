@@ -128,20 +128,11 @@ class TwintSearch(object):
         tweet_snippet: A snippet of tweet extracted from image.
     """
 
-    def __init__(self, user_id: str, date: datetime.datetime,
-                 tweet_snippet: str):
-        if not isinstance(user_id, str) or not isinstance(
-                date, datetime.datetime) or not (tweet_snippet, str):
-            raise TypeError(
-                'User ID and tweet_snippet must be type string, date must be type datetime.datetime'
-            )
-        if not user_id or not date or not tweet_snippet:
-            raise ValueError('User ID, Tweet or Date cannot be empty')
-        self.user_id = user_id
-        self.date = date
-        self.tweet_snippet = tweet_snippet
+    def __init__(self):
+        pass
 
-    def search(self):
+    def search(self, user_id: str, date: datetime.datetime,
+               tweet_snippet: str):
         """Searches for tweets
 
         Retrieves tweets of given username, date as well as tweet snippet using Twint.
@@ -155,10 +146,17 @@ class TwintSearch(object):
                 ([<tweet_obj>], ResultStatus.ALL_OKAY)
 
         """
+        if not isinstance(user_id, str) or not isinstance(
+                date, datetime.datetime) or not (tweet_snippet, str):
+            raise TypeError(
+                'User ID and tweet_snippet must be type string, date must be type datetime.datetime'
+            )
+        if not user_id or not date or not tweet_snippet:
+            raise ValueError('User ID, Tweet or Date cannot be empty')
         twint_config = twint.Config()
-        twint_config.Username = self.user_id
-        twint_config.Search = self.tweet_snippet
-        twint_config.Since = date_checker.format_for_date(self.date)
+        twint_config.Username = user_id
+        twint_config.Search = tweet_snippet
+        twint_config.Since = date_checker.format_for_date(date)
         twint_config.Limit = app_config.TWEET_MAX_STORE
         twint_config.Store_object = True
         try:
