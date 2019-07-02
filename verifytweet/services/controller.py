@@ -132,12 +132,12 @@ class NonAPIApproach(object):
             return (None, text_processor_status)
 
         try:
-            search_controller = search_service.TwintSearch(
+            search_controller = search_service.TwintSearch()
+            search_results, search_status = search_controller.search(
                 entities['user_id'], entities['date'], tweet_snippet)
         except Exception as e:
             logger.exception(e)
             return (None, ResultStatus.MODULE_FAILURE)
-        search_results, search_status = search_controller.search()
         if search_status != ResultStatus.ALL_OKAY:
             return (None, search_status)
 
