@@ -21,14 +21,13 @@ import os
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 
-import verifytweet.services.controller as controller
-import verifytweet.services.image as image_service
-import verifytweet.util.uploader as image_uploader
-import verifytweet.util.object_mapper as object_mapper
-
-from verifytweet.util.logging import logger
-from verifytweet.config.settings import app_config
-from verifytweet.util.result import ResultStatus
+from .services import controller
+from .services import image as image_service
+from .util import uploader as image_uploader
+from .util import object_mapper
+from .util.logging import logger
+from .config.settings import app_config
+from .util.result import ResultStatus
 
 router = Flask(__name__, static_folder=app_config.FILE_DIRECTORY)
 router.config['MAX_CONTENT_LENGTH'] = app_config.MAX_CONTENT_LENGTH
@@ -83,17 +82,8 @@ def verify_tweet():
         })
     result, controller_status = rest_controller.exec()
     if controller_status != ResultStatus.ALL_OKAY:
-        return jsonify({
-            'status': controller_status.value,
-            'result': result
-        })
+        return jsonify({'status': controller_status.value, 'result': result})
     tweet_dict, mapper_status = object_mapper.map_keys(result)
     if mapper_status != ResultStatus.ALL_OKAY:
-        return jsonify({
-            'status': mapper_status.value,
-            'result': tweet_dict
-        })
-    return jsonify({
-        'status': mapper_status.value,
-        'result': tweet_dict
-    })
+        return jsonify({'status': mapper_status.value, 'result': tweet_dict})
+    return jsonify({'status': mapper_status.value, 'result': tweet_dict})
