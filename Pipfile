@@ -9,6 +9,8 @@ yapf = "*"
 sphinx = "*"
 pytest = "*"
 twine = "*"
+bandit = "*"
+hypothesis = "*"
 
 [packages]
 certifi = "*"
