@@ -35,18 +35,18 @@ class Extractor(object):
         file_path: A string indicating file path where the image is stored.
     """
 
-    def __init__(self, file_path: str):
+    def __init__(self):
+        pass
+
+    def get_text(self, file_path: str):
+        """Extracts text from image
+        """
         if not isinstance(file_path, str):
             raise TypeError('File path must be type string')
         if not file_path:
             raise ValueError('File path cannot be empty')
-        self.file_path = file_path
-
-    def get_text(self):
-        """Extracts text from image
-        """
         logger.info('Processing Image...')
-        new_file_path = self.rescale(self.file_path)
+        new_file_path = self.rescale(file_path)
         logger.info('Extracting text from rescaled image...')
         try:
             img = PIL.Image.open(new_file_path)

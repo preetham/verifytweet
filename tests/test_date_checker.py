@@ -66,8 +66,8 @@ def test_format_for_date_invalid_type_input():
     """
     with pytest.raises(TypeError):
         date_checker.format_for_date(None)
-        date_checker.valid_date('2018/02/23')
-        date_checker.valid_date(2018)
+        date_checker.format_for_date('2018/02/23')
+        date_checker.format_for_date(2018)
 
 
 def test_format_for_date_valid_input():

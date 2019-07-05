@@ -73,14 +73,14 @@ def verify_tweet():
         return "Missing form fields", 400
     try:
         file_path = image_uploader.save_to_disk(request_image)
-        rest_controller = controller.NonAPIApproach(file_path)
+        rest_controller = controller.NonAPIApproach()
+        result, controller_status = rest_controller.exec(file_path)
     except Exception as e:
         logger.exception(e)
         return jsonify({
             'status': ResultStatus.MODULE_FAILURE.value,
             'result': None
         })
-    result, controller_status = rest_controller.exec()
     if controller_status != ResultStatus.ALL_OKAY:
         return jsonify({'status': controller_status.value, 'result': result})
     tweet_dict, mapper_status = object_mapper.map_keys(result)
