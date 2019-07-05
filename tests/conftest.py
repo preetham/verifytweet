@@ -16,20 +16,10 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import logging
-import sys
+import pytest
+import os
 
-from verifytweet.config.settings import app_config
 
-logger = logging.getLogger()
-logger.setLevel(app_config.LOG_LEVEL)
-
-handler = logging.StreamHandler(sys.stdout)
-handler.setLevel(app_config.LOG_LEVEL)
-
-web_formatter = logging.Formatter(u'%(asctime)s -- %(levelname)s -- %(message)s')
-cli_formatter = logging.Formatter(u'%(message)s')
-formatter = cli_formatter if app_config.RUN_METHOD == "cli" else web_formatter
-
-handler.setFormatter(formatter)
-logger.addHandler(handler)
+@pytest.fixture
+def file_path():
+    return os.path.abspath('./tests/static/real-tweet.png')

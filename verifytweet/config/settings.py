@@ -43,7 +43,7 @@ class Config(object):
     FILE_DIRECTORY = tempfile.mkdtemp()
     TWEET_MAX_STORE = 150
     RUN_METHOD = "cli"
-    LOG_LEVEL = logging.INFO
+    LOG_LEVEL = logging.DEBUG if os.getenv('VERBOSE_LOGS') else logging.INFO
 
 
 class TwitterAPIConfig(Config):

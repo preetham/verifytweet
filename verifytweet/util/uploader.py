@@ -37,7 +37,7 @@ def save_to_disk(file_obj):
         raise ValueError('file obj cannot be empty')
     filename = secure_filename(file_obj.filename)
     if file_obj and allowed_file(filename):
-        saved_file_name = str(uuid.uuid4()) + '.' + \
+        saved_file_name = str(uuid.uuid1()) + '.' + \
             filename.rsplit('.', 1)[1].lower()
         saved_file_path = os.path.join(app_config.FILE_DIRECTORY,
                                         saved_file_name)

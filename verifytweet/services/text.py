@@ -35,6 +35,8 @@ nltk.download('punkt', quiet=True)
 count_vectorizer = CountVectorizer()
 stopwords = set(nltk.corpus.stopwords.words('english'))
 
+USERNAME_REGEX = r'@(\w{1,15})\b'
+DATETIME_REGEX = r'((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))\s-\s\d{1,2}\s\w+\s\d{4}'
 
 class DataParser(object):
     """Parses data from extracted text
@@ -68,10 +70,8 @@ class DataParser(object):
         if not extracted_text:
             raise ValueError('Extracted text cannot be empty')
         logger.info('Parsing data out of extracted text...')
-        username_match = re.search(r'@(\w{1,15})\b', extracted_text)
-        datetime_match = re.search(
-            r'((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))\s-\s\d{1,2}\s\w+\s\d{4}',
-            extracted_text)
+        username_match = re.search(USERNAME_REGEX, extracted_text)
+        datetime_match = re.search(DATETIME_REGEX, extracted_text)
         if not username_match or not datetime_match:
             return (dict({
                 'user_id': None,
@@ -84,7 +84,7 @@ class DataParser(object):
             tzinfo=datetime.timezone.utc)
         username_end_index = username_match.end()
         date_start_index = datetime_match.start()
-        tweet = extracted_text[username_end_index + 5:date_start_index].strip()
+        tweet = extracted_text[username_end_index:date_start_index].strip()
         return (dict({
             'user_id': user_id,
             'tweet': tweet,
