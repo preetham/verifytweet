@@ -2,18 +2,18 @@ version: 2
 jobs:
   test:
     docker:
-      - image: circleci/python:3.6.5
+      - image: preethamkamidi/verifytweet-base:latest
     steps:
       - checkout
       - restore_cache:
           key: v1-py-cache-{{ .Branch }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "requirements.txt" }}
       - run:
-          name: Activate venv and install requirements
+          name: Setup venv and install requirements
           command: |
-            python3 -m virtualenv ~/.venv
+            python3 -m venv ~/.venv
             echo ". ~/.venv/bin/activate" >> $BASH_ENV
             source $BASH_ENV
-            pip install -r requirements.txt
+            pip install -r requirements.txt -r requirements-dev.txt
       - save_cache:
           name: Save Python dependencies cache
           key: v1-py-cache-{{ .Branch }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "requirements.txt" }}

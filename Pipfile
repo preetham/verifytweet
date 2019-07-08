@@ -11,6 +11,8 @@ pytest = "*"
 twine = "*"
 bandit = "*"
 hypothesis = "*"
+coverage = "*"
+pytest-cov = "*"
 
 [packages]
 certifi = "*"
