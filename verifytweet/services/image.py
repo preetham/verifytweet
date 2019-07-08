@@ -35,20 +35,20 @@ class Extractor(object):
         file_path: A string indicating file path where the image is stored.
     """
 
-    def __init__(self, file_path: str):
+    def __init__(self):
+        pass
+
+    def get_text(self, file_path: str):
+        """Extracts text from image
+        """
         if not isinstance(file_path, str):
             raise TypeError('File path must be type string')
         if not file_path:
             raise ValueError('File path cannot be empty')
-        self.file_path = file_path
-
-    def get_text(self):
-        """Extracts text from image
-        """
         logger.info('Processing Image...')
-        new_file_path = self.rescale(self.file_path)
-        logger.info('Extracting text from rescaled image...')
         try:
+            new_file_path = self.rescale(file_path)
+            logger.info('Extracting text from rescaled image...')
             img = PIL.Image.open(new_file_path)
             text = pytesseract.image_to_string(image=img)
             if not text:
@@ -60,6 +60,10 @@ class Extractor(object):
 
     @staticmethod
     def rescale(file_path):
+        if not isinstance(file_path, str):
+            raise TypeError('File path must be type string')
+        if not file_path:
+            raise ValueError('File path cannot be empty')
         logger.info('Rescaling Image to 300 dpi...')
         new_file_path = file_path.rsplit('.', 1)[0] + '.png'
         cmd = [
@@ -67,5 +71,6 @@ class Extractor(object):
             '-alpha', 'off', '-colorspace', 'Gray', '-threshold', '75%',
             new_file_path
         ]
-        subprocess.run(cmd)
+        completed_process = subprocess.run(cmd)
+        completed_process.check_returncode()
         return new_file_path

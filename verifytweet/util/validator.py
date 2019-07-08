@@ -16,12 +16,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import numpy
+from numpy import ndarray
 
 from verifytweet.config.settings import app_config
 from verifytweet.util.result import ResultStatus
 
-def verify_validity(similarity_matrix):
+def verify_validity(similarity_matrix: ndarray):
     """Verifies validity of a tweet in similarity matrix.
 
     Verifies validity of a tweet in similarity matrix, if it crosses
@@ -33,6 +33,10 @@ def verify_validity(similarity_matrix):
     Returns:
         A Boolean representing validity of the tweet.
     """
+    if not isinstance(similarity_matrix, ndarray):
+        raise TypeError('Similarity matrix must type numpy.ndarray')
+    if not similarity_matrix.all():
+        raise ValueError('Similarity matrix must be a valid numpy array')
     for row in similarity_matrix:
         for column in row:
             if column > app_config.SIMILARITY_THRESHOLD:
