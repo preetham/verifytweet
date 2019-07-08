@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "61ec6f5c7a3511a046ba747d4255bb99a2624b774cd129294cbddebcafcadc6b"
+            "sha256": "ae28f6c49a24e8caaccc5a386912b4019df2b76a9444fef9b26baad4199a7ed8"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -877,11 +877,11 @@
         },
         "hypothesis": {
             "hashes": [
-                "sha256:22d2bfb030baea313ca3f31d41ba0f0038d5794752d3947e2188ed67185471b2",
-                "sha256:adbd7cdb12d8c3f41f95d63b9fb0b91b2e11f636079793a49135dff5d0ee1bd0"
+                "sha256:936cdfd8c4db60c0d86bd57c9381e59c3c2b73bc00796f13d2e29af71513d77c",
+                "sha256:ad2797130be83ff374c1ed2781fb591b4152ae28abda28dd57b2a84a3fc1f5d4"
             ],
             "index": "pypi",
-            "version": "==4.26.2"
+            "version": "==4.26.4"
         },
         "idna": {
             "hashes": [
@@ -1014,11 +1014,11 @@
         },
         "pytest": {
             "hashes": [
-                "sha256:2878de8ae1c79a62c012da6186b88ff0562ea96ce29c4208d2a9b11d9f607df1",
-                "sha256:95b700cf21ed5b7e91bce7a6b5a573b2e3ef7b3643d00f681d8f9c4672f9fbdf"
+                "sha256:6ef6d06de77ce2961156013e9dff62f1b2688aa04d0dc244299fe7d67e09370d",
+                "sha256:a736fed91c12681a7b34617c8fcefe39ea04599ca72c608751c31d89579a3f77"
             ],
             "index": "pypi",
-            "version": "==5.0.0"
+            "version": "==5.0.1"
         },
         "pytz": {
             "hashes": [
@@ -1191,10 +1191,10 @@
         },
         "zipp": {
             "hashes": [
-                "sha256:8c1019c6aad13642199fbe458275ad6a84907634cc9f0989877ccc4a2840139d",
-                "sha256:ca943a7e809cc12257001ccfb99e3563da9af99d52f261725e96dfe0f9275bc3"
+                "sha256:4970c3758f4e89a7857a973b1e2a5d75bcdc47794442f2e2dd4fe8e0466e809a",
+                "sha256:8a5712cfd3bb4248015eb3b0b3c54a5f6ee3f2425963ef2a0125b8bc40aafaec"
             ],
-            "version": "==0.5.1"
+            "version": "==0.5.2"
         }
     }
 }

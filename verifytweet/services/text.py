@@ -163,7 +163,7 @@ class TextProcessor(object):
         corpus = list()
         corpus.append(extracted_tweet)
         corpus.extend(same_day_tweets)
-        logger.info('Corpus: ' + str(corpus))
+        logger.debug('Corpus: ' + str(corpus))
         try:
             sparse_matrix = count_vectorizer.fit_transform(corpus)
             similarity_matrix = cosine_similarity(sparse_matrix, sparse_matrix)

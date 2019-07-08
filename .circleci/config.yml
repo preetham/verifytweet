@@ -3,24 +3,25 @@ jobs:
   test:
     docker:
       - image: circleci/python:3.6.5
-    environment:
-      PIPENV_VENV_IN_PROJECT: "true"
     steps:
       - checkout
       - restore_cache:
-          key: v1-py-cache-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: v1-py-cache-{{ .Branch }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "requirements.txt" }}
       - run:
-          name: Install requirements
+          name: Activate venv and install requirements
           command: |
-            pipenv install
+            python3 -m virtualenv ~/.venv
+            echo ". ~/.venv/bin/activate" >> $BASH_ENV
+            source $BASH_ENV
+            pip install -r requirements.txt
       - save_cache:
           name: Save Python dependencies cache
-          key: v1-py-cache-{{ .Branch }}-{{ checksum "Pipfile.lock" }}
+          key: v1-py-cache-{{ .Branch }}-{{ checksum "requirements-dev.txt" }}-{{ checksum "requirements.txt" }}
           paths:
             - ~/.venv
       - run:
           name: Run tests
-          command: pipenv run pytest
+          command: pytest
             
 workflows:
   version: 2

@@ -23,3 +23,16 @@ import os
 @pytest.fixture
 def file_path():
     return os.path.abspath('./tests/static/real-tweet.png')
+
+
+@pytest.fixture
+def tweet_data():
+    import csv
+
+    tweet_list = list()
+    with open(os.path.abspath('./tests/static/tweets.csv'),
+              newline='') as csvfile:
+        csvreader = csv.reader(csvfile)
+        for row in csvreader:
+            tweet_list.append(row[10])
+    return tweet_list[1:]
