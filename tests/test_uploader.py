@@ -21,6 +21,7 @@ import pytest
 from werkzeug.datastructures import FileStorage
 
 from verifytweet import uploader
+from verifytweet import settings
 
 
 def test_save_to_disk_empty_input():
@@ -51,6 +52,9 @@ def test_save_to_disk_invalid_input():
 def test_save_to_disk_valid_input(file_path):
     """Test save to disk for valid file object
     """
+    app_config = settings.app_config
+    app_config.ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
+
     with open(file_path, 'rb') as f:
         test_file_obj = FileStorage(f)
         test_file_name = uploader.save_to_disk(test_file_obj)

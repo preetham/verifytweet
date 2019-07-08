@@ -21,7 +21,7 @@ import sys
 
 from verifytweet.config.settings import app_config
 
-logger = logging.getLogger()
+logger = logging.getLogger('verify_logger')
 logger.setLevel(app_config.LOG_LEVEL)
 
 handler = logging.StreamHandler(sys.stdout)

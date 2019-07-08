@@ -43,7 +43,7 @@ class Config(object):
     FILE_DIRECTORY = tempfile.mkdtemp()
     TWEET_MAX_STORE = 150
     RUN_METHOD = "cli"
-    LOG_LEVEL = logging.DEBUG if os.getenv('VERBOSE_LOGS') else logging.INFO
+    LOG_LEVEL = logging.DEBUG if os.getenv('DEBUG') else logging.INFO
 
 
 class TwitterAPIConfig(Config):
@@ -77,7 +77,7 @@ class WebConfig(Config):
     ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
 
 
-run_method = "cli" if "VERIFYTWEET_RUN_FROM_CLI" in os.environ else "web"
+run_method = "web" if "VERIFYTWEET_RUN_FOR_WEB" in os.environ else "cli"
 Config.RUN_METHOD = run_method
 configurations = {"web": WebConfig, "cli": Config}
 

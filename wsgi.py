@@ -24,6 +24,8 @@ import traceback
 import gunicorn.app.base
 from gunicorn.six import iteritems
 
+os.environ["VERIFYTWEET_RUN_FOR_WEB"] = "true"
+
 from verifytweet.config.settings import app_config
 from verifytweet.app import router
 

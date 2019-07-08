@@ -152,18 +152,19 @@ class TwintSearch(object):
             )
         if not user_id or not date or not tweet_snippet:
             raise ValueError('User ID, Tweet or Date cannot be empty')
+        results = list()
         twint_config = twint.Config()
         twint_config.Username = user_id
         twint_config.Search = tweet_snippet
         twint_config.Since = date_checker.format_for_date(date)
         twint_config.Limit = app_config.TWEET_MAX_STORE
         twint_config.Store_object = True
+        twint_config.Store_object_tweets_list = results
         try:
             twint.run.Search(twint_config)
         except Exception as e:
             logger.exception(e)
             return (None, ResultStatus.MODULE_FAILURE)
-        results = twint.output.tweets_object
         if not results:
             return (results, ResultStatus.NO_RESULT)
         logger.debug(f'Search results: {results}\n')
