@@ -16,7 +16,9 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
 import subprocess
+import uuid
 
 import PIL
 import pytesseract
@@ -51,6 +53,10 @@ class Extractor(object):
             logger.info('Extracting text from rescaled image...')
             img = PIL.Image.open(new_file_path)
             text = pytesseract.image_to_string(image=img)
+            try:
+                os.remove(new_file_path)
+            except Exception as e:
+                logger.exception(e)
             if not text:
                 return (None, ResultStatus.NO_RESULT)
             return (text, ResultStatus.ALL_OKAY)
@@ -65,7 +71,8 @@ class Extractor(object):
         if not file_path:
             raise ValueError('File path cannot be empty')
         logger.info('Rescaling Image to 300 dpi...')
-        new_file_path = file_path.rsplit('.', 1)[0] + '.png'
+        new_file_path = os.path.join(app_config.FILE_DIRECTORY,
+                                     str(uuid.uuid1()) + '.png')
         cmd = [
             'convert', file_path, '-resample', app_config.UPSCALE_RESOLUTION,
             '-alpha', 'off', '-colorspace', 'Gray', '-threshold', '75%',

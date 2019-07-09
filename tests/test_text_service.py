@@ -112,7 +112,7 @@ def test_clean_text_valid_input():
     test_str = "Ms. Tree caught the Falcon fairing!!"
     module_result, module_status = data_parser.clean_text(test_str)
     assert module_status == result.ResultStatus.ALL_OKAY
-    assert module_result == "Ms Tree caught Falcon"
+    assert module_result == "caught Falcon fairing"
 
 
 def test_get_similarity_empty_input():

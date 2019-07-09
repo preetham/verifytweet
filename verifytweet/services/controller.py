@@ -16,11 +16,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import os
+
 import verifytweet.services.image as image_service
 import verifytweet.services.text as text_service
 import verifytweet.services.search as search_service
 import verifytweet.util.date_checker as date_checker
-import verifytweet.util.validator as validator
 import verifytweet.util.common as common
 
 from verifytweet.util.logging import logger
@@ -69,27 +70,11 @@ class APIApproach(object):
             return (None, ResultStatus.MODULE_FAILURE)
         if search_status != ResultStatus.ALL_OKAY:
             return (None, search_status)
-
-        try:
-            text_processor = text_service.TextProcessor()
-            similarity_matrix, processor_status = text_processor.get_similarity(
-                entities['tweet'], same_day_tweets)
-        except Exception as e:
-            logger.exception(e)
-            return (None, ResultStatus.MODULE_FAILURE)
-        if processor_status != ResultStatus.ALL_OKAY:
-            return (None, processor_status)
-
-        try:
-            valid_tweet, validator_status = validator.verify_validity(
-                similarity_matrix)
-        except Exception as e:
-            logger.exception(e)
-            return (None, ResultStatus.MODULE_FAILURE)
+        validity, match_index, validator_status = common.calculate_and_validate(
+            entities=entities, same_day_tweets=same_day_tweets)
         if validator_status != ResultStatus.ALL_OKAY:
-            return (None, validator_status)
-        logger.info('Tweet Validity: ' + str(valid_tweet))
-        return (valid_tweet, ResultStatus.ALL_OKAY)
+            return (None, ResultStatus.MODULE_FAILURE)
+        return (same_day_tweets[match_index], ResultStatus.ALL_OKAY)
 
 
 class NonAPIApproach(object):
@@ -136,11 +121,19 @@ class NonAPIApproach(object):
         try:
             search_controller = search_service.TwintSearch()
             search_results, search_status = search_controller.search(
-                entities['user_id'], entities['date'], tweet_snippet)
+                entities['user_id'], tweet_snippet, entities['date'])
         except Exception as e:
             logger.exception(e)
             return (None, ResultStatus.MODULE_FAILURE)
         if search_status != ResultStatus.ALL_OKAY:
             return (None, search_status)
-
+        if not entities['date']:
+            same_day_tweets = list()
+            for tweet_obj in search_results:
+                same_day_tweets.append(tweet_obj.tweet)
+            validity, match_index, validator_status = common.calculate_and_validate(
+                entities=entities, same_day_tweets=same_day_tweets)
+            if validator_status != ResultStatus.ALL_OKAY:
+                return (None, ResultStatus.MODULE_FAILURE)
+            return (search_results[match_index], ResultStatus.ALL_OKAY)
         return (search_results[0], ResultStatus.ALL_OKAY)

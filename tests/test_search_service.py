@@ -49,7 +49,10 @@ def test_search_invalid_input():
     """Test search for valid type invalid input
     """
     with pytest.raises(ValueError):
-        twint_search.search('', datetime.datetime.now(), '')
+        twint_search.search(
+            '',
+            '',
+            datetime.datetime.now())
 
 
 def test_search_valid_input():
@@ -60,8 +63,8 @@ def test_search_valid_input():
     test_tweet_snippet = 'Sharknado'
     test_tweet = 'Sharknado is real'
     module_result, module_status = twint_search.search(test_user_id,
-                                                       test_datetime,
-                                                       test_tweet_snippet)
+                                                       test_tweet_snippet,
+                                                       test_datetime)
     assert module_status == result.ResultStatus.ALL_OKAY
     assert len(module_result) > 0
     assert isinstance(module_result[0].tweet, str)

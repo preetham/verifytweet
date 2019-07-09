@@ -37,6 +37,8 @@ stopwords = set(nltk.corpus.stopwords.words('english'))
 
 USERNAME_REGEX = r'@(\w{1,15})\b'
 DATETIME_REGEX = r'((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))\s-\s\d{1,2}\s\w+\s\d{4}'
+ALPHANUM_REGEX = r'[^A-Za-z0-9]+'
+
 
 class DataParser(object):
     """Parses data from extracted text
@@ -72,19 +74,27 @@ class DataParser(object):
         logger.info('Parsing data out of extracted text...')
         username_match = re.search(USERNAME_REGEX, extracted_text)
         datetime_match = re.search(DATETIME_REGEX, extracted_text)
-        if not username_match or not datetime_match:
+        if not username_match:
             return (dict({
                 'user_id': None,
                 'tweet': None,
                 'datetime': None
             }), ResultStatus.NO_RESULT)
         user_id = username_match.group()[1:]
+        tweet_start_index = username_match.end()
+        tweet_end_index = len(
+            extracted_text
+        ) - 1 if not datetime_match else datetime_match.start()
+        tweet = extracted_text[tweet_start_index:tweet_end_index].strip()
+        if not datetime_match:
+            return (dict({
+                'user_id': user_id,
+                'tweet': tweet,
+                'date': None
+            }), ResultStatus.ALL_OKAY)
         date_str = datetime_match.group().replace('-', '')
         processed_datetime = date_parser.parse(date_str).replace(
             tzinfo=datetime.timezone.utc)
-        username_end_index = username_match.end()
-        date_start_index = datetime_match.start()
-        tweet = extracted_text[username_end_index:date_start_index].strip()
         return (dict({
             'user_id': user_id,
             'tweet': tweet,
@@ -114,7 +124,7 @@ class DataParser(object):
             logger.exception(e)
             return (None, ResultStatus.MODULE_FAILURE)
         filtered_sentence = [w for w in word_tokens if not w in stopwords]
-        picked_words = filtered_sentence[0:min([len(filtered_sentence), 4])]
+        picked_words = filtered_sentence[2:min([len(filtered_sentence), 6])]
         tweet_snippet = " ".join(picked_words)
         if not tweet_snippet:
             return (tweet_snippet, ResultStatus.NO_RESULT)
