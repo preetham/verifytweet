@@ -53,8 +53,8 @@ def test_validator_invalid_input():
 def test_validator_valid_similarity_matrix():
     """Test verfiy validity for valid similarity matrix
     """
-    test_numpy_array = numpy.array([[0.7, 0.6], [0.5, 0.1]])
-    module_result, result_status = validator.verify_validity(test_numpy_array)
+    test_numpy_array = numpy.array([[1., 0.7, 0.6], [0.5, 0.1, 1.]])
+    module_result, match_index, result_status = validator.verify_validity(test_numpy_array)
     assert result_status == result.ResultStatus.ALL_OKAY
     assert module_result == True
 
@@ -63,6 +63,6 @@ def test_validator_invalid_similarity_matrix():
     """Test verfiy validity for valid similarity matrix
     """
     test_numpy_array = numpy.array([[0.1, 0.1], [0.1, 0.1]])
-    module_result, result_status = validator.verify_validity(test_numpy_array)
+    module_result, match_index, result_status = validator.verify_validity(test_numpy_array)
     assert result_status == result.ResultStatus.ALL_OKAY
     assert module_result == False

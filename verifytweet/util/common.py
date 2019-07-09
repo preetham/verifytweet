@@ -19,6 +19,7 @@
 
 import verifytweet.services.image as image_service
 import verifytweet.services.text as text_service
+import verifytweet.util.validator as validator
 
 from verifytweet.util.logging import logger
 from verifytweet.util.result import ResultStatus
@@ -62,3 +63,41 @@ def extract_and_parse(file_path: str):
         return (None, parser_status)
     logger.debug('Entities: ' + str(entities))
     return (entities, parser_status)
+
+
+def calculate_and_validate(entities: dict, same_day_tweets: list):
+    """Calculates similarity matrix and validates tweet
+
+    Calculates a similarity matrix from same day tweet
+    corpus using text service and validates tweet
+    using validator
+
+    Args:
+        entities: represents dictionary of entities extracted from text
+        same_day_tweets: list of strings representing same day tweets
+
+    Returns:
+        valid_tweet: Validity status of tweet
+        status: Enum ResultStatus representing result status
+
+    """
+    try:
+        text_processor = text_service.TextProcessor()
+        similarity_matrix, processor_status = text_processor.get_similarity(
+            entities['tweet'], same_day_tweets)
+    except Exception as e:
+        logger.exception(e)
+        return (None, None, ResultStatus.MODULE_FAILURE)
+    if processor_status != ResultStatus.ALL_OKAY:
+        return (None, None, processor_status)
+
+    try:
+        valid_tweet, match_index, validator_status = validator.verify_validity(
+            similarity_matrix)
+    except Exception as e:
+        logger.exception(e)
+        return (None, None, ResultStatus.MODULE_FAILURE)
+    if validator_status != ResultStatus.ALL_OKAY:
+        return (None, None, validator_status)
+    logger.debug('Tweet Validity: ' + str(valid_tweet))
+    return (valid_tweet, match_index-1, ResultStatus.ALL_OKAY)

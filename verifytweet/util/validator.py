@@ -37,8 +37,8 @@ def verify_validity(similarity_matrix: ndarray):
         raise TypeError('Similarity matrix must type numpy.ndarray')
     if not similarity_matrix.all():
         raise ValueError('Similarity matrix must be a valid numpy array')
-    for row in similarity_matrix:
-        for column in row:
-            if column > app_config.SIMILARITY_THRESHOLD:
-                return (True, ResultStatus.ALL_OKAY)
-    return (False, ResultStatus.ALL_OKAY)
+    row = similarity_matrix[0]
+    for column_index in range(1, row.shape[0]):
+        if row[column_index] > app_config.SIMILARITY_THRESHOLD:
+            return (True, column_index, ResultStatus.ALL_OKAY)
+    return (False, None, ResultStatus.ALL_OKAY)

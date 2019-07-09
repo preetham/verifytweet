@@ -52,14 +52,14 @@ def run_as_command(filepath):
     try:
         verify_controller = controller.NonAPIApproach()
         tweet_obj, controller_status = verify_controller.exec(filepath)
+        if controller_status == ResultStatus.MODULE_FAILURE:
+            print(f"Something went wrong, Please try again!")
+        elif controller_status == ResultStatus.NO_RESULT:
+            print(f"Fake Tweet!")
+        else:
+            print(f"\nVerified Tweet!")
+            print(
+                f"**** Username: {tweet_obj.username} ****\n**** Tweet: {tweet_obj.tweet} ****\n**** Likes: {tweet_obj.likes_count} ****\n**** Retweets: {tweet_obj.retweets_count} ****\n**** Link: {tweet_obj.link} ****"
+            )
     except Exception as e:
         logger.exception(e)
-    if controller_status == ResultStatus.MODULE_FAILURE:
-        print(f"Something went wrong, Please try again!")
-    elif controller_status == ResultStatus.NO_RESULT:
-        print(f"Fake Tweet!")
-    else:
-        print(f"\nVerified Tweet!")
-        print(
-            f"**** Username: {tweet_obj.username} ****\n**** Tweet: {tweet_obj.tweet} ****\n**** Likes: {tweet_obj.likes_count} ****\n**** Retweets: {tweet_obj.retweets_count} ****\n**** Link: {tweet_obj.link} ****"
-        )

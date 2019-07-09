@@ -44,6 +44,7 @@ class Config(object):
     TWEET_MAX_STORE = 150
     RUN_METHOD = "cli"
     LOG_LEVEL = logging.DEBUG if os.getenv('DEBUG') else logging.INFO
+    SIMILARITY_THRESHOLD = 0.6
 
 
 class TwitterAPIConfig(Config):
@@ -60,7 +61,6 @@ class TwitterAPIConfig(Config):
     TWEET_COUNT_KEY = "count"
     TWEET_MAX_OLD = 7
     TWEET_TEXT_KEY = "text"
-    SIMILARITY_THRESHOLD = 0.6
 
 
 class WebConfig(Config):
