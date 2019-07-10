@@ -43,7 +43,8 @@ class Config(object):
     FILE_DIRECTORY = tempfile.mkdtemp()
     TWEET_MAX_STORE = 150
     RUN_METHOD = "cli"
-    LOG_LEVEL = logging.INFO
+    LOG_LEVEL = logging.DEBUG if os.getenv('DEBUG') else logging.INFO
+    SIMILARITY_THRESHOLD = 0.6
 
 
 class TwitterAPIConfig(Config):
@@ -60,7 +61,6 @@ class TwitterAPIConfig(Config):
     TWEET_COUNT_KEY = "count"
     TWEET_MAX_OLD = 7
     TWEET_TEXT_KEY = "text"
-    SIMILARITY_THRESHOLD = 0.6
 
 
 class WebConfig(Config):
@@ -77,7 +77,7 @@ class WebConfig(Config):
     ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
 
 
-run_method = "cli" if "VERIFYTWEET_RUN_FROM_CLI" in os.environ else "web"
+run_method = "web" if "VERIFYTWEET_RUN_FOR_WEB" in os.environ else "cli"
 Config.RUN_METHOD = run_method
 configurations = {"web": WebConfig, "cli": Config}
 

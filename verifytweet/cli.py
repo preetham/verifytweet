@@ -17,10 +17,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-
 import click
-
-os.environ["VERIFYTWEET_RUN_FROM_CLI"] = "true"
 
 from .services import controller
 from .config.settings import app_config
@@ -53,16 +50,16 @@ def run_as_command(filepath):
     """
 
     try:
-        verify_controller = controller.NonAPIApproach(filepath)
+        verify_controller = controller.NonAPIApproach()
+        tweet_obj, controller_status = verify_controller.exec(filepath)
+        if controller_status == ResultStatus.MODULE_FAILURE:
+            print(f"Something went wrong, Please try again!")
+        elif controller_status == ResultStatus.NO_RESULT:
+            print(f"Fake Tweet!")
+        else:
+            print(f"\nVerified Tweet!")
+            print(
+                f"**** Username: {tweet_obj.username} ****\n**** Tweet: {tweet_obj.tweet} ****\n**** Likes: {tweet_obj.likes_count} ****\n**** Retweets: {tweet_obj.retweets_count} ****\n**** Link: {tweet_obj.link} ****"
+            )
     except Exception as e:
         logger.exception(e)
-    tweet_obj, controller_status = verify_controller.exec()
-    if controller_status == ResultStatus.MODULE_FAILURE:
-        print(f"Something went wrong, Please try again!")
-    elif controller_status == ResultStatus.NO_RESULT:
-        print(f"Fake Tweet!")
-    else:
-        print(f"\nVerified Tweet!")
-        print(
-            f"**** Username: {tweet_obj.username} ****\n**** Tweet: {tweet_obj.tweet} ****\n**** Likes: {tweet_obj.likes_count} ****\n**** Retweets: {tweet_obj.retweets_count} ****\n**** Link: {tweet_obj.link} ****"
-        )

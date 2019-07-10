@@ -1,2 +1,0 @@
-export TAG=$(grep -oE "\"(.*?)\"" verifytweet/__init__.py)
-export TAG=${TAG:1:5}

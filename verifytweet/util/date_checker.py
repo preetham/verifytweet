@@ -31,14 +31,18 @@ def valid_date(processed_date):
     Returns:
         A Boolean indicating if tweet can be futher processed or not. 
     """
-    if not processed_date:
+    if not processed_date or not isinstance(processed_date, datetime):
         return False
     curr_date = datetime.now(timezone.utc)
     datetime_diff = curr_date - processed_date
-    if datetime_diff.days > app_config.TWEET_MAX_OLD:
+    if datetime_diff.days > 7:
         return False
     return True
 
 
 def format_for_date(tweet_datetime: datetime):
+    if not isinstance(tweet_datetime, datetime):
+        raise TypeError('Tweet date has to be type datetime')
+    if not tweet_datetime:
+        raise ValueError('Tweet date has to be a valid datetime object')
     return tweet_datetime.strftime('%Y-%m-%d')

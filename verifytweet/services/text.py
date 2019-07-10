@@ -35,25 +35,25 @@ nltk.download('punkt', quiet=True)
 count_vectorizer = CountVectorizer()
 stopwords = set(nltk.corpus.stopwords.words('english'))
 
+USERNAME_REGEX = r'@(\w{1,15})\b'
+DATETIME_REGEX = r'((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))\s-\s\d{1,2}\s\w+\s\d{4}'
+ALPHANUM_REGEX = r'[^A-Za-z0-9]+'
+
 
 class DataParser(object):
     """Parses data from extracted text
-
-    Attributes:
-        extracted_text: A string denoting extracted text from image.
     """
 
-    def __init__(self, extracted_text: str):
-        if not isinstance(extracted_text, str):
-            raise TypeError('Extracted text must be type string')
-        if not extracted_text:
-            raise ValueError('Extracted text cannot be empty')
-        self.text = extracted_text
+    def __init__(self):
+        pass
 
-    def get_entities(self):
+    def get_entities(self, extracted_text: str):
         """Parses entities from extracted text.
 
         Parses username (denoted by user_id), tweet as well as date from extracted text.
+
+        Attributes:
+            extracted_text: A string denoting extracted text from image.
 
         Returns:
             A tuple contaning a dictionary: a mapping of user_id, tweet and date
@@ -67,47 +67,64 @@ class DataParser(object):
                 }
 
         """
+        if not isinstance(extracted_text, str):
+            raise TypeError('Extracted text must be type string')
+        if not extracted_text:
+            raise ValueError('Extracted text cannot be empty')
         logger.info('Parsing data out of extracted text...')
-        username_match = re.search(r'@(\w{1,15})\b', self.text)
-        datetime_match = re.search(
-            r'((1[0-2]|0?[1-9]):([0-5][0-9]) ?([AaPp][Mm]))\s-\s\d{1,2}\s\w+\s\d{4}',
-            self.text)
-        if not username_match or not datetime_match:
+        username_match = re.search(USERNAME_REGEX, extracted_text)
+        datetime_match = re.search(DATETIME_REGEX, extracted_text)
+        if not username_match:
             return (dict({
                 'user_id': None,
                 'tweet': None,
                 'datetime': None
             }), ResultStatus.NO_RESULT)
         user_id = username_match.group()[1:]
+        tweet_start_index = username_match.end()
+        tweet_end_index = len(
+            extracted_text
+        ) - 1 if not datetime_match else datetime_match.start()
+        tweet = extracted_text[tweet_start_index:tweet_end_index].strip()
+        if not datetime_match:
+            return (dict({
+                'user_id': user_id,
+                'tweet': tweet,
+                'date': None
+            }), ResultStatus.ALL_OKAY)
         date_str = datetime_match.group().replace('-', '')
         processed_datetime = date_parser.parse(date_str).replace(
             tzinfo=datetime.timezone.utc)
-        username_end_index = username_match.end()
-        date_start_index = datetime_match.start()
-        tweet = self.text[username_end_index + 5:date_start_index].strip()
         return (dict({
             'user_id': user_id,
             'tweet': tweet,
             'date': processed_datetime
         }), ResultStatus.ALL_OKAY)
 
-    def clean_text(self):
+    def clean_text(self, extracted_text: str):
         """Removes stop words and samples words out of tweet
         to create a snippet.
+
+        Attributes:
+            extracted_text: A string denoting extracted text from image.
 
         Returns:
             A tuple contaning a tweet snippet
             as well as Enum ResultStatus which gives out result status.
         """
+        if not isinstance(extracted_text, str):
+            raise TypeError('Extracted text must be type string')
+        if not extracted_text:
+            raise ValueError('Extracted text cannot be empty')
         try:
-            non_punc_tweet = self.text.translate(
+            non_punc_tweet = extracted_text.translate(
                 str.maketrans('', '', string.punctuation))
             word_tokens = nltk.tokenize.word_tokenize(non_punc_tweet)
         except Exception as e:
             logger.exception(e)
             return (None, ResultStatus.MODULE_FAILURE)
         filtered_sentence = [w for w in word_tokens if not w in stopwords]
-        picked_words = filtered_sentence[0:min([len(filtered_sentence), 4])]
+        picked_words = filtered_sentence[2:min([len(filtered_sentence), 6])]
         tweet_snippet = " ".join(picked_words)
         if not tweet_snippet:
             return (tweet_snippet, ResultStatus.NO_RESULT)
@@ -117,31 +134,21 @@ class DataParser(object):
 
 class TextProcessor(object):
     """Processes extracted tweet and aggregated tweets
-
-    Attributes:
-        extracted_tweet: A string denoting extracted tweet from image.
-        same_day_tweets: A list contaning tweets of target date
     """
 
-    def __init__(self, extracted_tweet: str, same_day_tweets: list):
-        if not isinstance(extracted_tweet, str) or not isinstance(
-                same_day_tweets, list):
-            raise TypeError(
-                'Extracted tweet must be type str and Same day tweets must be type list'
-            )
-        if not extracted_tweet or not same_day_tweets:
-            raise ValueError(
-                'Extracted tweet must be a valid string and same day tweets must be a valid list'
-            )
-        self.extracted_tweet = extracted_tweet
-        self.same_day_tweets = same_day_tweets
+    def __init__(self):
+        pass
 
-    def get_similarity(self):
+    def get_similarity(self, extracted_tweet: str, same_day_tweets: list):
         """Calculates a similarity matrix.
 
         Calculates a similarity matrix of the corpus containing
         extracted tweet and tweets aggregated from Twitter Search API
         using consine similarity approach.
+
+        Attributes:
+            extracted_tweet: A string denoting extracted tweet from image.
+            same_day_tweets: A list contaning tweets of target date
 
         Returns:
             A tuple contaning a similarity matrix, which is a numpy array
@@ -153,11 +160,20 @@ class TextProcessor(object):
 
 
         """
+        if not isinstance(extracted_tweet, str) or not isinstance(
+                same_day_tweets, list):
+            raise TypeError(
+                'Extracted tweet must be type str and Same day tweets must be type list'
+            )
+        if not extracted_tweet or not same_day_tweets:
+            raise ValueError(
+                'Extracted tweet must be a valid string and same day tweets must be a valid list'
+            )
         logger.info('Processing similarity of two tweets...')
         corpus = list()
-        corpus.append(self.extracted_tweet)
-        corpus.extend(self.same_day_tweets)
-        logger.info('Corpus: ' + str(corpus))
+        corpus.append(extracted_tweet)
+        corpus.extend(same_day_tweets)
+        logger.debug('Corpus: ' + str(corpus))
         try:
             sparse_matrix = count_vectorizer.fit_transform(corpus)
             similarity_matrix = cosine_similarity(sparse_matrix, sparse_matrix)

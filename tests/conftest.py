@@ -16,17 +16,23 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from .config import settings
-from .services import controller
-from .services import image
-from .services import search
-from .services import text
-from .util import date_checker
-from .util import logging
-from .util import object_mapper
-from .util import result
-from .util import uploader
-from .util import validator
-from .util import common
+import pytest
+import os
 
-__version__ = "0.5.1"
+
+@pytest.fixture
+def file_path():
+    return os.path.abspath('./tests/static/real-tweet.png')
+
+
+@pytest.fixture
+def tweet_data():
+    import csv
+
+    tweet_list = list()
+    with open(os.path.abspath('./tests/static/tweets.csv'),
+              newline='') as csvfile:
+        csvreader = csv.reader(csvfile)
+        for row in csvreader:
+            tweet_list.append(row[10])
+    return tweet_list[1:]

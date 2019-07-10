@@ -16,6 +16,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from twint.tweet import tweet
 from verifytweet.config.settings import app_config
 from verifytweet.util.logging import logger
 from verifytweet.util.result import ResultStatus
@@ -29,8 +30,12 @@ def map_keys(tweet_obj):
     Returns:
         A dictionary contaning a mapping of members of tweet object 
     """
-    if not tweet_obj:
-        return (None, ResultStatus.MODULE_FAILURE)
+    if not isinstance(tweet_obj, tweet):
+        raise TypeError('Tweet object must be of type twint.tweet')
+    try:
+        id = tweet_obj.id
+    except AttributeError:
+        raise ValueError('Tweet object must be valid')
     return (dict({
         "id": tweet_obj.id,
         "conversation_id": tweet_obj.conversation_id,

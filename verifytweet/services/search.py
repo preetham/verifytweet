@@ -40,18 +40,10 @@ class TwitterAPISearch(object):
         date: A datetime object representing the date in question.
     """
 
-    def __init__(self, user_id: str, date: datetime.datetime):
-        if not isinstance(user_id, str) or not isinstance(
-                date, datetime.datetime):
-            raise TypeError(
-                'User ID must be type string and date must be type datetime.datetime'
-            )
-        if not user_id or not date:
-            raise ValueError('User ID or Date cannot be empty')
-        self.user_id = user_id
-        self.date = date
+    def __init__(self):
+        pass
 
-    def aggregate_tweets(self):
+    def aggregate_tweets(self, user_id: str, date: datetime.datetime):
         """Aggregates tweets from a single day.
 
         Retrieves tweets pertaining to the given username and date using Twitter Search API.
@@ -70,9 +62,16 @@ class TwitterAPISearch(object):
                 }
 
         """
+        if not isinstance(user_id, str) or not isinstance(
+                date, datetime.datetime):
+            raise TypeError(
+                'User ID must be type string and date must be type datetime.datetime'
+            )
+        if not user_id or not date:
+            raise ValueError('User ID or Date cannot be empty')
         logger.info('Searching for tweet using Twitter API...')
         querystring = dict({
-            app_config.TWEET_USERNAME_KEY: self.user_id,
+            app_config.TWEET_USERNAME_KEY: user_id,
             app_config.TWEET_COUNT_KEY: app_config.TWEET_COUNT
         })
         try:
@@ -87,10 +86,10 @@ class TwitterAPISearch(object):
             tweet_date = date_parser.parse(entry[app_config.TWEET_DATE_KEY])
             if date_checker.format_for_date(
                     tweet_date) == date_checker.format_for_date(
-                        self.date) and date_checker.valid_date(tweet_date):
+                        date) and date_checker.valid_date(tweet_date):
                 logger.debug('Tweet found...: ' +
                              str(entry[app_config.TWEET_TEXT_KEY]))
-                same_day_tweets.append(entry[app_config.TWEET_TEXT_KEY])
+                same_day_tweets.append(entry)
         if not same_day_tweets:
             return (same_day_tweets, ResultStatus.NO_RESULT)
         return (same_day_tweets, ResultStatus.ALL_OKAY)
@@ -131,8 +130,8 @@ class TwintSearch(object):
     def __init__(self):
         pass
 
-    def search(self, user_id: str, date: datetime.datetime,
-               tweet_snippet: str):
+    def search(self, user_id: str, tweet_snippet: str,
+               date: datetime.datetime = None):
         """Searches for tweets
 
         Retrieves tweets of given username, date as well as tweet snippet using Twint.
@@ -146,25 +145,28 @@ class TwintSearch(object):
                 ([<tweet_obj>], ResultStatus.ALL_OKAY)
 
         """
-        if not isinstance(user_id, str) or not isinstance(
-                date, datetime.datetime) or not (tweet_snippet, str):
+        if not isinstance(user_id, str) or not (tweet_snippet, str):
             raise TypeError(
                 'User ID and tweet_snippet must be type string, date must be type datetime.datetime'
             )
-        if not user_id or not date or not tweet_snippet:
+        if not user_id or not tweet_snippet:
             raise ValueError('User ID, Tweet or Date cannot be empty')
+        results = list()
         twint_config = twint.Config()
         twint_config.Username = user_id
-        twint_config.Search = tweet_snippet
-        twint_config.Since = date_checker.format_for_date(date)
+        if date:
+            twint_config.Since = date_checker.format_for_date(date)
+            twint_config.Until = date_checker.format_for_date(date + datetime.timedelta(days=1))
+        else:
+            twint_config.Search = tweet_snippet
         twint_config.Limit = app_config.TWEET_MAX_STORE
         twint_config.Store_object = True
+        twint_config.Store_object_tweets_list = results
         try:
             twint.run.Search(twint_config)
         except Exception as e:
             logger.exception(e)
             return (None, ResultStatus.MODULE_FAILURE)
-        results = twint.output.tweets_object
         if not results:
             return (results, ResultStatus.NO_RESULT)
         logger.debug(f'Search results: {results}\n')
