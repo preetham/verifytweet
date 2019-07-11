@@ -76,7 +76,8 @@ class Extractor(object):
         cmd = [
             'convert', file_path, '-resample', app_config.UPSCALE_RESOLUTION,
             '-alpha', 'off', '-colorspace', 'Gray', '-threshold', '75%',
-            new_file_path
+            '-density', '300x300', '-units', 'PixelsPerCentimeter', '-blur',
+            '1x65000', '-level', '50x100%', new_file_path
         ]
         completed_process = subprocess.run(cmd)
         completed_process.check_returncode()
