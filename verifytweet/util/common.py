@@ -65,7 +65,7 @@ def extract_and_parse(file_path: str):
     return (entities, parser_status)
 
 
-def calculate_and_validate(entities: dict, same_day_tweets: list):
+def calculate_and_validate(entities: dict, tweet_text_list: list):
     """Calculates similarity matrix and validates tweet
 
     Calculates a similarity matrix from same day tweet
@@ -74,7 +74,7 @@ def calculate_and_validate(entities: dict, same_day_tweets: list):
 
     Args:
         entities: represents dictionary of entities extracted from text
-        same_day_tweets: list of strings representing same day tweets
+        tweet_text_list: list of strings representing same day tweets
 
     Returns:
         valid_tweet: Validity status of tweet
@@ -84,7 +84,7 @@ def calculate_and_validate(entities: dict, same_day_tweets: list):
     try:
         text_processor = text_service.TextProcessor()
         similarity_matrix, processor_status = text_processor.get_similarity(
-            entities['tweet'], same_day_tweets)
+            entities['tweet'], tweet_text_list)
     except Exception as e:
         logger.exception(e)
         return (None, None, ResultStatus.MODULE_FAILURE)
@@ -97,7 +97,9 @@ def calculate_and_validate(entities: dict, same_day_tweets: list):
     except Exception as e:
         logger.exception(e)
         return (None, None, ResultStatus.MODULE_FAILURE)
-    if validator_status != ResultStatus.ALL_OKAY:
+    if validator_status == ResultStatus.MODULE_FAILURE:
         return (None, None, validator_status)
     logger.debug('Tweet Validity: ' + str(valid_tweet))
+    if not valid_tweet:
+        return (False, None, ResultStatus.NO_RESULT)
     return (valid_tweet, match_index-1, ResultStatus.ALL_OKAY)
