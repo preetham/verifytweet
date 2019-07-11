@@ -18,7 +18,7 @@ elasticsearch==7.0.2
 eventlet==0.25.0
 fake-useragent==0.1.11
 flask-cors==3.0.8
-flask==1.1.0
+flask==1.1.1
 geographiclib==1.49
 geopy==1.20.0
 greenlet==0.4.15

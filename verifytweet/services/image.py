@@ -74,7 +74,7 @@ class Extractor(object):
         new_file_path = os.path.join(app_config.FILE_DIRECTORY,
                                      str(uuid.uuid1()) + '.png')
         cmd = [
-            'convert', file_path, '-resample', app_config.UPSCALE_RESOLUTION,
+            'convert', file_path, '-resample', '300x300',
             '-alpha', 'off', '-colorspace', 'Gray', '-threshold', '75%',
             '-density', '300x300', '-units', 'PixelsPerCentimeter', '-blur',
             '1x65000', '-level', '50x100%', new_file_path

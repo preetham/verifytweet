@@ -156,7 +156,7 @@ class TwintSearch(object):
         twint_config.Username = user_id
         if date:
             twint_config.Since = date_checker.format_for_date(date)
-            twint_config.Until = date_checker.format_for_date(date + datetime.timedelta(days=1))
+            twint_config.Until = date_checker.format_for_date(date + datetime.timedelta(days=2))
         else:
             twint_config.Search = tweet_snippet
         twint_config.Limit = app_config.TWEET_MAX_STORE

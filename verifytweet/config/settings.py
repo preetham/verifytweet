@@ -39,7 +39,6 @@ class Config(object):
 
     IMAGEMAGICK_PATH = os.getenv('IMAGEMAGICK_PATH') if os.getenv(
         'IMAGEMAGICK_PATH') else "convert"
-    UPSCALE_RESOLUTION = "300x300"
     FILE_DIRECTORY = tempfile.mkdtemp()
     TWEET_MAX_STORE = 150
     RUN_METHOD = "cli"

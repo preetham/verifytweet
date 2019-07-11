@@ -13,6 +13,7 @@ bandit = "*"
 hypothesis = "*"
 coverage = "*"
 pytest-cov = "*"
+awscli = "*"
 
 [packages]
 certifi = "*"
