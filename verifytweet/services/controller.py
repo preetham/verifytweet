@@ -127,13 +127,13 @@ class NonAPIApproach(object):
             return (None, ResultStatus.MODULE_FAILURE)
         if search_status != ResultStatus.ALL_OKAY:
             return (None, search_status)
-        if not entities['date']:
-            same_day_tweets = list()
-            for tweet_obj in search_results:
-                same_day_tweets.append(tweet_obj.tweet)
-            validity, match_index, validator_status = common.calculate_and_validate(
-                entities=entities, same_day_tweets=same_day_tweets)
-            if validator_status != ResultStatus.ALL_OKAY:
-                return (None, ResultStatus.MODULE_FAILURE)
-            return (search_results[match_index], ResultStatus.ALL_OKAY)
-        return (search_results[0], ResultStatus.ALL_OKAY)
+        tweet_text_list = list()
+        for tweet_obj in search_results:
+            tweet_text_list.append(tweet_obj.tweet)
+        validity, match_index, validator_status = common.calculate_and_validate(
+            entities=entities, tweet_text_list=tweet_text_list)
+        if validator_status == ResultStatus.MODULE_FAILURE:
+            return (None, ResultStatus.MODULE_FAILURE)
+        if not validity:
+            return (None, ResultStatus.NO_RESULT)
+        return (search_results[match_index], ResultStatus.ALL_OKAY)
