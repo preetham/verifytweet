@@ -41,6 +41,7 @@ def tweet_data():
 @pytest.fixture
 def test_data():
     import subprocess
+    from verifytweet import util
 
     local_dir_path = os.path.abspath('./tests/static/test-dataset')
     cmd_process = subprocess.run([
@@ -56,7 +57,8 @@ def test_data():
             subset_truth = True if dirpath.split('/')[-2] == "real" else False
             file_paths = list()
             for filename in filenames:
-                file_paths.append(os.path.join(os.path.abspath(dirpath), filename))
+                if util.uploader.allowed_file(filename):
+                    file_paths.append(os.path.join(os.path.abspath(dirpath), filename))
             subset['expected_value'] = subset_truth
             subset['type'] = subset_type
             subset['files'] = file_paths

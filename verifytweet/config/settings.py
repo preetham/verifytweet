@@ -42,7 +42,8 @@ class Config(object):
     FILE_DIRECTORY = tempfile.mkdtemp()
     TWEET_MAX_STORE = 150
     RUN_METHOD = "cli"
-    LOG_LEVEL = logging.DEBUG if os.getenv('DEBUG') else logging.INFO
+    LOG_LEVEL = logging.DEBUG if os.getenv('VERIFYTWEET_DEBUG') else logging.INFO
+    ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
     SIMILARITY_THRESHOLD = 0.6
 
 
@@ -73,7 +74,6 @@ class WebConfig(Config):
     MAX_CONTENT_LENGTH = 2097152
     WORKER_COUNT = no_of_workers()
     WORKER_CLASS = "eventlet"
-    ALLOWED_EXTENSIONS = set(["png", "jpg", "jpeg"])
 
 
 run_method = "web" if "VERIFYTWEET_RUN_FOR_WEB" in os.environ else "cli"
