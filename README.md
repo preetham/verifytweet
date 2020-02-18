@@ -21,13 +21,13 @@ Verify Tweet attempts to resolve the problem by letting users upload such tweet 
 Installing via pip:
 
 ```sh
-pip install -U git+https://github.com/kamidipreetham/verifytweet.git@origin/master#egg=verifytweet
+pip install verifytweet
 ```
 
 Or via pipenv:
 
 ```sh
-pipenv install -e git+https://github.com/kamidipreetham/verifytweet.git@origin/master#egg=verifytweet
+pipenv install verifytweet
 ```
 
 ## Usage

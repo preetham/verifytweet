@@ -34,6 +34,12 @@ router.config['MAX_CONTENT_LENGTH'] = app_config.MAX_CONTENT_LENGTH
 cors = CORS(router, resources={r'/api/*': {'origins': '*'}})
 
 
+@router.route('/', methods=['GET'])
+def root():
+    logger.info('Health Check log')
+    return jsonify({'status': 0})
+
+
 @router.route('/health', methods=['GET'])
 def health():
     logger.info('Health Check log')

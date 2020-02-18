@@ -59,10 +59,10 @@ setup(
     include_package_data=True,
     python_requires=">=3.6.*",
     install_requires=[
-        "click>=5.1", "Pillow==6.0.0", "pytesseract==0.2.6",
-        "requests==2.22.0", "scikit-learn==0.21.2", "nltk>=3.4.3",
+        "click>=5.1", "Pillow>=6.2.0", "pytesseract==0.2.6",
+        "requests==2.22.0", "scikit-learn==0.21.2", "nltk>=3.4.5",
         "python-dateutil==2.8.0", "werkzeug==0.15.4",
-        "twint @ git+https://github.com/twintproject/twint.git"
+        "twint==2.1.13"
     ],
     entry_points={
         "console_scripts": ["verifytweet = verifytweet.cli:run_as_command"]
