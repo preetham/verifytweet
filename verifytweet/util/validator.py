@@ -35,8 +35,6 @@ def verify_validity(similarity_matrix: ndarray):
     """
     if not isinstance(similarity_matrix, ndarray):
         raise TypeError('Similarity matrix must type numpy.ndarray')
-    if not similarity_matrix.all():
-        raise ValueError('Similarity matrix must be a valid numpy array')
     row = similarity_matrix[0]
     for column_index in range(1, row.shape[0]):
         if row[column_index] > app_config.SIMILARITY_THRESHOLD:

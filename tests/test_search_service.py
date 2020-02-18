@@ -59,12 +59,10 @@ def test_search_valid_input():
     """Test search for valid input
     """
     test_user_id = 'elonmusk'
-    test_datetime = datetime.datetime.strptime('2019-07-06', '%Y-%m-%d')
     test_tweet_snippet = 'Sharknado'
     test_tweet = 'Sharknado is real'
     module_result, module_status = twint_search.search(test_user_id,
-                                                       test_tweet_snippet,
-                                                       test_datetime)
+                                                       test_tweet_snippet)
     assert module_status == result.ResultStatus.ALL_OKAY
     assert len(module_result) > 0
     assert isinstance(module_result[0].tweet, str)
