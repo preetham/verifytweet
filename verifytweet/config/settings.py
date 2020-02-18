@@ -67,8 +67,8 @@ class WebConfig(Config):
     """Configuration for running as web service
     """
 
-    APP_HOST = os.getenv('APP_HOST')
-    APP_PORT = os.getenv('APP_PORT')
+    APP_HOST = os.getenv('APP_HOST') or '0.0.0.0'
+    APP_PORT = os.getenv('APP_PORT') or '8000'
     TIMEOUT = 2000
     MAX_CONTENT_LENGTH_KEY = "MAX_CONTENT_LENGTH"
     MAX_CONTENT_LENGTH = 2097152
@@ -78,6 +78,9 @@ class WebConfig(Config):
 
 run_method = "web" if "VERIFYTWEET_RUN_FOR_WEB" in os.environ else "cli"
 Config.RUN_METHOD = run_method
-configurations = {"web": WebConfig, "cli": Config}
+configurations = dict({
+    "cli": Config,
+    "web": WebConfig,
+})
 
 app_config = configurations[run_method]
