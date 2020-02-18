@@ -42,14 +42,6 @@ def test_validator_invalid_type_input():
         validator.verify_validity([[]])
 
 
-def test_validator_invalid_input():
-    """Test verify validity for invalid input
-    """
-    test_numpy_array = numpy.array([[None, None], [None, None]])
-    with pytest.raises(ValueError):
-        validator.verify_validity(test_numpy_array)
-
-
 def test_validator_valid_similarity_matrix():
     """Test verfiy validity for valid similarity matrix
     """

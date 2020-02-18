@@ -36,3 +36,31 @@ def tweet_data():
         for row in csvreader:
             tweet_list.append(row[10])
     return tweet_list[1:]
+
+
+@pytest.fixture
+def test_data():
+    import subprocess
+    from verifytweet import util
+
+    local_dir_path = os.path.abspath('./tests/static/test-dataset')
+    cmd_process = subprocess.run([
+        'aws', 's3', 'sync', 's3://verifytweet-dataset',
+        os.path.abspath(local_dir_path)
+    ])
+    cmd_process.check_returncode()
+    dataset = list()
+    for (dirpath, dirnames, filenames) in os.walk(local_dir_path):
+        if filenames:
+            subset = dict()
+            subset_type = dirpath.split('/')[-1]
+            subset_truth = True if dirpath.split('/')[-2] == "real" else False
+            file_paths = list()
+            for filename in filenames:
+                if util.uploader.allowed_file(filename):
+                    file_paths.append(os.path.join(os.path.abspath(dirpath), filename))
+            subset['expected_value'] = subset_truth
+            subset['type'] = subset_type
+            subset['files'] = file_paths
+            dataset.append(subset)
+    return dataset

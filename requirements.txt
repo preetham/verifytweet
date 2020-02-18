@@ -1,5 +1,4 @@
 -i https://pypi.org/simple
--e git+https://github.com/twintproject/twint.git@ad27650fbc0bf8c3f2c78449088a5ede7239f53a#egg=twint
 aiodns==2.0.0
 aiohttp-socks==0.2.2
 aiohttp==3.5.4
@@ -18,7 +17,7 @@ elasticsearch==7.0.2
 eventlet==0.25.0
 fake-useragent==0.1.11
 flask-cors==3.0.8
-flask==1.1.0
+flask==1.1.1
 geographiclib==1.49
 geopy==1.20.0
 greenlet==0.4.15
@@ -34,10 +33,10 @@ markupsafe==1.1.1
 monotonic==1.5
 multidict==4.5.2
 networkx==2.3
-nltk==3.4.4
+nltk>=3.4.5
 numpy==1.16.4
 pandas==0.24.2
-pillow==6.1.0
+pillow>=6.2.0
 pycares==3.0.0
 pycodestyle==2.5.0
 pycparser==2.19
@@ -54,6 +53,7 @@ scikit-learn==0.21.2
 scipy==1.3.0
 six==1.12.0
 soupsieve==1.9.2
+twint==2.1.13
 typing-extensions==3.7.4 ; python_version < '3.7'
 typing==3.7.4 ; python_version < '3.7'
 urllib3==1.25.3

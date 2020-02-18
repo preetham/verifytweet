@@ -109,4 +109,5 @@ venv.bak/
 
 #data folders
 dataset
+test-dataset
 .DS_Store
