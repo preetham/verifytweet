@@ -30,6 +30,9 @@ def no_of_workers():
     twice the cpu count.
 
     """
+    if os.getenv('NUM_WORKERS').isdigit():
+        return int(os.getenv('NUM_WORKERS'))
+    
     return multiprocessing.cpu_count() * 2 + 1
 
 
