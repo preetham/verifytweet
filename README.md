@@ -50,5 +50,5 @@ Verify Tweet is released under GNU Affero General Public License v3.0.
 
 ## Future features
 
-- [ ] Support for Image links
+- [x] Support for Image links
 - [ ] Support for Tweets with replies
