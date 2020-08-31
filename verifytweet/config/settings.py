@@ -30,9 +30,9 @@ def no_of_workers():
     twice the cpu count.
 
     """
-    if os.getenv('NUM_WORKERS').isdigit():
+    if os.getenv('NUM_WORKERS') and os.getenv('NUM_WORKERS').isdigit():
         return int(os.getenv('NUM_WORKERS'))
-    
+
     return multiprocessing.cpu_count() * 2 + 1
 
 
@@ -42,7 +42,7 @@ class Config(object):
 
     IMAGEMAGICK_PATH = os.getenv('IMAGEMAGICK_PATH') if os.getenv(
         'IMAGEMAGICK_PATH') else "convert"
-    FILE_DIRECTORY = tempfile.mkdtemp()
+    FILE_DIRECTORY = os.getenv('FILE_DIRECTORY') if os.getenv('FILE_DIRECTORY') else tempfile.mkdtemp()
     TWEET_MAX_STORE = 150
     RUN_METHOD = "cli"
     LOG_LEVEL = logging.DEBUG if os.getenv('VERIFYTWEET_DEBUG') else logging.INFO

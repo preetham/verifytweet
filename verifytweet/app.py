@@ -73,14 +73,20 @@ def verify_tweet():
     """
     logger.info('Received data for processing...')
 
-    data_type = request.form['type']
-    request_image = request.files['data']
-    if not data_type or not request_image:
-        return "Missing form fields", 400
     try:
-        file_path = image_uploader.save_to_disk(request_image)
-        rest_controller = controller.NonAPIApproach()
-        result, controller_status = rest_controller.exec(file_path)
+        data_type = request.form['type']
+        if not data_type:
+            return "Missing type", 400
+        if data_type == 'image':
+            request_image = request.files['data']
+            if not request_image:
+                return "Missing form fields", 400
+            file_path = image_uploader.save_to_disk(request_image)
+        if data_type == 'link':
+            request_link = request.form['url']
+            file_path = image_uploader.save_from_url(request_link)
+            rest_controller = controller.NonAPIApproach()
+            result, controller_status = rest_controller.exec(file_path)
     except Exception as e:
         logger.exception(e)
         return jsonify({

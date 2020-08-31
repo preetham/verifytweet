@@ -18,6 +18,9 @@
 
 import os
 import uuid
+import shutil
+
+import requests
 
 from werkzeug.utils import secure_filename
 from werkzeug.datastructures import FileStorage
@@ -45,6 +48,26 @@ def save_to_disk(file_obj):
         file_obj.save(saved_file_path)
         return saved_file_path
     return None
+
+def save_from_url(image_url: str):
+    """Saves image given via url to disk
+    """
+    if not isinstance(image_url, str):
+        raise TypeError('image_url must be a string')
+    if not image_url:
+        raise ValueError('image_url has to be a valid string')
+    r = requests.get(image_url, stream=True, allow_redirects=True)
+    if r.status_code != 200:
+        raise FileNotFoundError()
+    filename = image_url.split("/")[-1]
+    if filename and allowed_file(filename):
+        saved_file_path = os.path.join(app_config.FILE_DIRECTORY, filename)
+        logger.info('Saving file to path: ' + saved_file_path)
+        r.raw.decode_content = True
+        with open(saved_file_path, 'wb') as f:
+            shutil.copyfileobj(r.raw, f)
+            logger.info('Image successfully downloaded')
+            return saved_file_path
 
 def allowed_file(filename):
     """Checks if uploaded file has valid extenstion
